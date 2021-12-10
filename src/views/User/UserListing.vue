@@ -1,0 +1,133 @@
+<template>
+  <div class="flex flex-column space-v">
+    <div>
+      <user-listing-filters-panel @change="filtersChanged" />
+    </div>
+    <div class="space-2-v">
+      <user-listing-table
+        :items="items"
+        :loading="loading"
+        @rowSelected="rowSelected"
+      />
+    </div>
+  </div>
+  <Dialog v-model:visible="detailsDialogVisible" style="width: 45rem">
+    <user-details :user="selectedUser" @userRemoved="userRemoved" @userChanged="userChanged" />
+  </Dialog>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import UserListingFiltersPanel from '@/components/User/UserListingFiltersPanel.vue';
+import UserListingTable from '@/components/User/UserListingTable.vue';
+import UserDetails from '@/components/User/UserDetails.vue';
+import { UserService } from '@/services/UserService';
+import { GetUsersByFiltersRequest } from '@/classes/User/DTOs/commands/GetUsersByFiltersRequest';
+import { UserDetails as UserDetailsDTO } from '@/classes/User/DTOs/queries/UserDetails';
+
+export default defineComponent({
+  components: {
+    UserListingFiltersPanel,
+    UserListingTable,
+    UserDetails,
+  },
+  data() {
+    return {
+      items: [],
+      loading: false,
+      waiting: false,
+      waitingTimer: null,
+      detailsDialogVisible: false,
+      selectedUser: null,
+    };
+  },
+  methods: {
+    setData(items: UserDetailsDTO[]) {
+      this.items = items;
+      this.loadProfileImages();
+    },
+    async loadProfileImages() {
+      for (const user of this.items) {
+        try {
+          const profileImage = await UserService.getProfileImage(user.id);
+          const reader = new FileReader();
+          reader.readAsDataURL(profileImage);
+          reader.onload = () => {
+            user.profileImageSrc = reader.result;
+          };
+        } catch (err) {
+          console.log('ERROR for ', user.name);
+          console.log(err);
+        }
+      }
+    },
+    openUserDetailsDialog(user: UserDetailsDTO) {
+      this.selectedUser = user;
+      this.detailsDialogVisible = true;
+    },
+    closeUserDetailsDialog() {
+      this.selectedUser = null;
+      this.detailsDialogVisible = false;
+    },
+    rowSelected(selectedUser: UserDetailsDTO) {
+      this.closeUserDetailsDialog();
+      this.openUserDetailsDialog(selectedUser);
+    },
+    userRemoved() {
+      this.closeUserDetailsDialog();
+      this.fetchUsers();
+    },
+    userChanged() {
+      this.closeUserDetailsDialog();
+      this.fetchUsers();
+    },
+    fetchUsers() {
+      this.loading = true;
+      UserService.getUsersByFilters(this.filters)
+        .then((users) => {
+          this.items = users;
+          this.loadProfileImages();
+        })
+        .catch((err) => {
+          this.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 400,
+          });
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    filtersChanged(filters: GetUsersByFiltersRequest) {
+      if (this.waiting) {
+        clearTimeout(this.waitingTimer);
+      } else {
+        this.waiting = true;
+      }
+      this.waitingTimer = setTimeout(() => {
+        this.waiting = false;
+        this.filters = filters;
+        this.fetchUsers();
+      }, 1000);
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    UserService.getUsersByFilters(null)
+      .then((users) => {
+        next((vm) => {
+          vm['setData'](users);
+        });
+      })
+      .catch((err) => {
+        next((vm) => {
+          vm.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 4000,
+          });
+        });
+      });
+  },
+});
+</script>

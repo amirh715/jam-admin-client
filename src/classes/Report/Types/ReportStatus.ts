@@ -1,0 +1,10 @@
+enum ReportStatus {
+  PENDING_ASSIGNMENT = 'PENDING_ASSIGNMENT',
+  ASSIGNED = 'ASSIGNED',
+  PROCESSED = 'PROCESSED',
+  ARCHIVED = 'ARCHIVED',
+}
+
+export {
+  ReportStatus,
+};
