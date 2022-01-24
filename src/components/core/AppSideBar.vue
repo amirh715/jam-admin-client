@@ -31,10 +31,20 @@ export default defineComponent({
         },
         {
           label: 'ویترین',
+          command() { router.push({ name: 'ShowcaseListing' }); },
         },
         {
           label: 'کاربران',
-          command() { router.push({ name: 'User' }); },
+          items: [
+            {
+              label: 'لیست کاربران',
+              command() { router.push({ name: 'UserListing' }); },
+            },
+            {
+              label: 'سوابق ورود',
+              command() { router.push({ name: 'LoginListing' }); },
+            },
+          ],
         },
         {
           label: 'نوتیفیکیشن',

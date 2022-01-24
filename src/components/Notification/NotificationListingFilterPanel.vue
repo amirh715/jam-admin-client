@@ -20,11 +20,17 @@
           <base-multi-select-input
             label="نوع نوتیفیکیشن"
             v-model="type"
+            :options="notificationTypeOptions"
+            optionLabel="displayValue"
+            :selectionLimit="1"
             @change="changed"
           />
           <base-multi-select-input
             label="نوع ارسال کننده"
             v-model="senderType"
+            :options="notificationSenderTypeOptions"
+            optionLabel="displayValue"
+            :selectionLimit="1"
             @change="changed"
           />
         </div>
@@ -55,16 +61,13 @@
           <div>
             <p>زمان ارسال</p>
             <div class="flex justify-content-center">
-              <datetime-picker
+              <base-datetime-picker
                 type="datetime"
                 v-model="scheduledOn"
                 @change="changed"
-                format="YYYY-MM-DDTHH:mm:ss"
-                display-format="dddd jDD jMMMM jYYYY HH:mm"
                 range
                 clearable
               />
-              {{}}
             </div>
           </div>
         </div>
@@ -75,12 +78,10 @@
           <div>
             <p>زمان ایجاد</p>
             <div class="flex justify-content-center">
-              <datetime-picker
+              <base-datetime-picker
                 type="datetime"
                 v-model="createdAt"
                 @change="changed"
-                format="YYYY-MM-DDTHH:mm:ss"
-                display-format="dddd jDD jMMMM jYYYY HH:mm"
                 range
                 clearable
               />
@@ -91,12 +92,10 @@
           <div>
             <p>زمان آخرین بروز رسانی</p>
             <div class="flex justify-content-center">
-              <datetime-picker
+              <base-datetime-picker
                 type="datetime"
                 v-model="lastModifiedAt"
                 @change="changed"
-                format="YYYY-MM-DDTHH:mm:ss"
-                display-format="dddd jDD jMMMM jYYYY HH:mm"
                 range
                 clearable
               />
@@ -122,6 +121,7 @@ import { GetNotificationsByFiltersRequest } from '@/classes/Notification/DTOs/co
 
 export default defineComponent({
   name: 'notification-listing-filter-panel',
+  emits: ['change'],
   data() {
     return {
       searchTerm: null,
@@ -129,14 +129,40 @@ export default defineComponent({
       senderType: null,
       isSent: null,
       hasDeliveries: null,
-      sentAt: [],
       createdAt: [],
       lastModifiedAt: [],
       scheduledOn: [],
+      notificationTypeOptions: [
+        {
+          value: 'SMS',
+          displayValue: 'SMS',
+        },
+        {
+          value: 'FCM',
+          displayValue: 'FCM',
+        },
+        {
+          value: 'EMAIL',
+          displayValue: 'ایمیل',
+        },
+      ],
+      notificationSenderTypeOptions: [
+        {
+          value: 'USER',
+          displayValue: 'کاربر',
+        },
+        {
+          value: 'SYS',
+          displayValue: 'سیستمی',
+        },
+      ],
     };
   },
   methods: {
     changed() {
+      console.log(this.createdAt);
+      console.log(this.lastModifiedAt);
+      console.log(this.scheduledOn);
       const filters = new GetNotificationsByFiltersRequest(
         this.searchTerm,
         this.createdAt[0],
@@ -145,10 +171,10 @@ export default defineComponent({
         this.lastModifiedAt[1],
         this.scheduledOn[0],
         this.scheduledOn[1],
-        this.type,
+        this.type && this.type[0].value,
         this.isSent,
         this.withUndeliveredRecipients,
-        this.senderType,
+        this.senderType && this.senderType[0].value,
       );
       this.$emit('change', filters);
     },

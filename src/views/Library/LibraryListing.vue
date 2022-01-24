@@ -1,7 +1,7 @@
 <template>
   <div>
     <library-filters-panel @change="filtersChanged" />
-    <library-listing-table :items="items" :loading="loading" />
+    <library-listing-table :items="items" :loading="loading" @loadMore="loadMoreClicked" />
   </div>
 </template>
 
@@ -21,15 +21,18 @@ export default defineComponent({
   data() {
     return {
       items: [],
+      filters: null,
       loading: false,
       waiting: false,
       waitingTimer: null,
+      limit: 30,
+      offset: 0,
     };
   },
   methods: {
-    fetch(filters: GetLibraryEntitiesByFiltersRequest) {
+    fetch() {
       this.loading = true;
-      LibraryService.getByFilters(filters)
+      LibraryService.getByFilters(this.filters)
         .then((items) => {
           this.items = items;
           this.loadImages();
@@ -59,8 +62,10 @@ export default defineComponent({
         }
       }
     },
+    loadMoreClicked() {
+      this.filters.offset += this.filters.limit;
+    },
     filtersChanged(filters: GetLibraryEntitiesByFiltersRequest) {
-      console.log(filters);
       if (this.waiting) {
         clearTimeout(this.waitingTimer);
       } else {
@@ -68,7 +73,8 @@ export default defineComponent({
       }
       this.waitingTimer = setTimeout(() => {
         this.waiting = false;
-        this.fetch(filters);
+        this.filters = filters;
+        this.fetch();
       }, 1000);
     },
   },

@@ -15,19 +15,47 @@
     <div class="flex">
       <div class="flex">
         <vue-feather type="play"></vue-feather>
-        <span class="space-h">پخش ماهانه:‌ {{entity.monthlyPlayedCount}}</span>
+        <span class="space-h">پخش ماهانه:‌
+          <number-displayer :value="entity.monthlyPlayedCount" />
+        </span>
       </div>
       <div class="flex space-4-h">
         <vue-feather type="play"></vue-feather>
-        <span class="space-h">مجموع پخش:‌ {{entity.totalPlayedCount}}</span>
+        <span class="space-h">مجموع پخش:‌
+          <number-displayer :value="entity.totalPlayedCount" />
+        </span>
+      </div>
+    </div>
+    <div class="flex space-2-v">
+      <div class="flex">
+        <vue-feather type="user"></vue-feather>
+        <span class="space-h">ایجاد کننده:</span>
+        <span>{{entity.creatorName}}</span>
+      </div>
+      <div class="flex space-4-h">
+        <vue-feather type="clock"></vue-feather>
+        <span class="space-h">تاریخ و زمان ایجاد:</span>
+        <date-time-displayer :datetime="entity.createdAt" /><br/>
+      </div>
+    </div>
+    <div class="flex">
+      <div class="flex">
+        <vue-feather type="user"></vue-feather>
+        <span class="space-h">آخرین بروزرسانی کننده:</span>
+        <span>{{entity.updaterName}}</span>
+      </div>
+      <div class="flex space-4-h">
+        <vue-feather type="clock"></vue-feather>
+        <span class="space-h">تاریخ و زمان آخرین بروزرسانی:</span>
+        <date-time-displayer :datetime="entity.lastModifiedAt" />
       </div>
     </div>
     <div>
       <p class="text-right">{{entity.description}}</p>
     </div>
-    <div v-if="entity.flag" class="text-right flex align-items-center colorful">
+    <div v-if="entity.flagNote" class="text-right flex align-items-center colorful space-v">
       <vue-feather type="flag"></vue-feather>
-      <p class="space-h">{{entity.flag}}</p>
+      <b class="space-h">{{entity.flagNote}}</b>
     </div>
   </div>
 </template>
@@ -43,9 +71,15 @@ import { defineComponent } from 'vue';
 import { ArtistDetails as ArtistDetailsDTO } from '@/classes/Library/DTOs/queries/ArtistDetails';
 import { AlbumDetails as AlbumDetailsDTO } from '@/classes/Library/DTOs/queries/AlbumDetails';
 import { TrackDetails as TrackDetailsDTO } from '@/classes/Library/DTOs/queries/TrackDetails';
+import PublishedStateTag from '@/components/Library/PublishedStateTag.vue';
+import DateTimeDisplayer from '../common/DateTimeDisplayer.vue';
 
 export default defineComponent({
   name: 'base-library-entity-details',
+  components: {
+    PublishedStateTag,
+    DateTimeDisplayer,
+  },
   props: {
     entity: ArtistDetailsDTO || AlbumDetailsDTO || TrackDetailsDTO,
   },

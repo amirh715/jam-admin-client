@@ -27,6 +27,9 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-await-in-loop': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'prefer-template': 'off',
+    'operator-linebreak': 'off',
+    'class-methods-use-this': 'off',
   },
   overrides: [
     {

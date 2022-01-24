@@ -16,8 +16,8 @@
       <div v-if="note" class="note">
         <small>{{note}}</small>
       </div>
-      <div v-if="errors && errors.length > 0" class="error">
-        <b v-for="err of errors" :key="err.$message">{{err.$message}}</b>
+      <div v-if="error" class="error">
+        <span>{{error}}</span>
       </div>
     </div>
   </div>
@@ -38,7 +38,7 @@ export default defineComponent({
     disabled: Boolean,
     max: Number,
     note: String,
-    errors: String,
+    error: String,
   },
 });
 </script>

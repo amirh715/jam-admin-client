@@ -8,27 +8,32 @@ class CreateAlbumRequest {
   public recordLabel: string;
   public producer: string;
   public releaseDate: Date;
+  public image: Blob;
 
   public constructor(
-    title: string,
-    description: string,
-    genreIds: string[],
-    tags: string[],
-    flag: string,
-    artistId: string,
-    recordLabel: string,
-    producer: string,
-    releaseDate: Date,
+    _props: {
+      title: string,
+      description: string,
+      genreIds: string[],
+      tags: string[],
+      flag: string,
+      artistId: string,
+      recordLabel: string,
+      producer: string,
+      releaseDate: Date,
+      image: Blob,
+    },
   ) {
-    this.title = title;
-    this.description = description;
-    this.genreIds = genreIds;
-    this.tags = tags;
-    this.flag = flag;
-    this.artistId = artistId;
-    this.recordLabel = recordLabel;
-    this.producer = producer;
-    this.releaseDate = releaseDate;
+    this.title = _props.title;
+    this.description = _props.description;
+    this.genreIds = _props.genreIds;
+    this.tags = _props.tags;
+    this.flag = _props.flag;
+    this.artistId = _props.artistId;
+    this.recordLabel = _props.recordLabel;
+    this.producer = _props.producer;
+    this.releaseDate = _props.releaseDate;
+    this.image = _props.image;
   }
 }
 

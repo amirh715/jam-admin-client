@@ -164,15 +164,18 @@ export default defineComponent({
   methods: {
     submit() {
       const dto = new CreateAlbumRequest(
-        this.title,
-        this.description,
-        this.genreIds,
-        this.tags,
-        this.flag,
-        this.artistId,
-        this.recordLabel,
-        this.producer,
-        this.releaseDate,
+        {
+          title: this.title,
+          description: this.description,
+          genreIds: this.genreIds,
+          tags: this.tags,
+          flag: this.flag,
+          artistId: this.artistId,
+          recordLabel: this.recordLabel,
+          producer: this.producer,
+          releaseDate: this.releaseDate,
+          image: this.image,
+        },
       );
       LibraryService.createAlbum(dto)
         .then(() => {

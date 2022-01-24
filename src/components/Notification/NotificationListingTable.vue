@@ -3,7 +3,9 @@
     <BlockUI :blocked="loading">
       <DataTable :value="items" stripedRows scrollHeight="flex"
         selectionMode="single" @rowSelect="onRowSelect" >
-        <template #header>{{items.length}}</template>
+        <template #header>
+          <number-displayer :value="items.length" />
+        </template>
         <Column field="title" header="عنوان" bodyStyle="text-align: right">
         </Column>
         <Column field="type" header="نوع" bodyStyle="text-align: right">
@@ -14,15 +16,21 @@
           </template>
         </Column>
         <Column field="recipientsCount" header="تعداد مخاطبان"
-          bodyStyle="text-align: right"></Column>
-        <Column field="deliveryCount" header="تعداد دریافت شده ها"
-          bodyStyle="text-align: right"></Column>
+          bodyStyle="text-align: right">
+            <template #body="slotProps">
+              <number-displayer :value="slotProps.data.recipientsCount" />
+            </template>
+          </Column>
         <Column field="scheduledOn" header="تاریخ و زمان ارسال"
-          bodyStyle="text-align: right"></Column>
+          bodyStyle="text-align: right">
+            <template #body="slotProps">
+              <date-time-displayer :datetime="new Date(slotProps.data.scheduledOn)" />
+            </template>
+          </Column>
         <Column field="senderName" header="ارسال کننده" bodyStyle="text-align: right"></Column>
       </DataTable>
     </BlockUI>
-    <Dialog v-model:visible="detailsDialogVisible" style="width: 45rem">
+    <Dialog v-model:visible="detailsDialogVisible" style="width: 50rem">
       <notification-details :notification="selectedNotification" />
     </Dialog>
   </div>
@@ -36,12 +44,14 @@
 import { defineComponent } from 'vue';
 import NotificationIsSentTag from '@/components/Notification/NotificationIsSentTag.vue';
 import NotificationDetails from './NotificationDetails.vue';
+import DateTimeDisplayer from '../common/DateTimeDisplayer.vue';
 
 export default defineComponent({
   name: 'notification-listing-table',
   components: {
     NotificationIsSentTag,
     NotificationDetails,
+    DateTimeDisplayer,
   },
   props: {
     items: Array,

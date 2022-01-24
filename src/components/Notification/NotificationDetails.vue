@@ -16,7 +16,7 @@
           <div class="space-v flex">
             <vue-feather type="clock"></vue-feather>
             <b class="space-h">زمان ارسال:</b>
-            <span>{{notification.scheduledOn}}</span>
+            <date-time-displayer :datetime="notification.scheduledOn" />
           </div>
           <div class="space-v flex">
             <vue-feather type="user"></vue-feather>
@@ -26,17 +26,17 @@
           <div class="space-v flex">
             <vue-feather type="link"></vue-feather>
             <b class="space-h">لینک:</b>
-            <span>{{notification.link || '( بدون لینک )'}}</span>
+            <span>{{notification.route || '( بدون لینک )'}}</span>
           </div>
           <div class="space-v flex">
             <vue-feather type="clock"></vue-feather>
             <b class="space-h">زمان ایجاد:</b>
-            <span>{{notification.createdAt}}</span>
+            <date-time-displayer :datetime="notification.createdAt" />
           </div>
           <div class="space-v flex">
             <vue-feather type="clock"></vue-feather>
             <b class="space-h">زمان آخرین تغییر:</b>
-            <span>{{notification.lastModifiedAt}}</span>
+            <date-time-displayer :datetime="notification.lastModifiedAt" />
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
     <div><hr/></div>
     <div>
       <DataTable :value="notification.recipients" stripedRows
-        scrollHeight="flex">
+        scrollHeight="flex" class="virtual-scroll">
           <template #header>
             <div class="flex justify-content-around">
               <b>تعداد مخاطبان: {{notification.recipientsCount}}</b>
@@ -94,15 +94,24 @@
     </div>
   </div>
   <div v-else>
-    <edit-notification-form :notification="notification" />
+    <edit-notification-form :notification="notification" @submit="editMode=false" />
   </div>
 </template>
+
+<style scoped>
+.virtual-scroll {
+  height: 10rem;
+  overflow-y: scroll;
+}
+</style>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { NotificationDetails } from '@/classes/Notification/DTOs/queries/NotificationDetails';
 import NotificationIsSentTag from './NotificationIsSentTag.vue';
 import EditNotificationForm from './EditNotificationForm.vue';
+import { NotificationService } from '@/services/NotificationService';
+import { RemoveNotificationRequest } from '@/classes/Notification/DTOs/commands/RemoveNotificationRequest';
 
 export default defineComponent({
   name: 'notification-details',
@@ -126,13 +135,26 @@ export default defineComponent({
         acceptLabel: 'آره پاک کن',
         rejectLabel: 'بیخیال',
         defaultFocus: 'reject',
-        accept() {
-          console.log();
+        accept: () => {
+          const dto = new RemoveNotificationRequest(this.notification.id);
+          NotificationService.removeNotification(dto)
+            .then(() => {
+              this.$toast.add({
+                severity: 'success',
+                detail: 'نوتیفیکیشن پاک شد.',
+                life: 4000,
+              });
+              this.$router.push({ name: 'NotificationListing' });
+            })
+            .catch((err) => {
+              this.$toast.add({
+                severity: 'error',
+                detail: err.message,
+                life: 4000,
+              });
+            });
         },
       });
-    },
-    editNotification() {
-      console.log();
     },
   },
 });

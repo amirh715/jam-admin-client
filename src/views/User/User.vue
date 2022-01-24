@@ -28,7 +28,7 @@ export default defineComponent({
   methods: {
     newUserCreated() {
       this.visible = false;
-      this.$router.go();
+      this.$router.push({ name: 'UserListing' });
     },
   },
 });

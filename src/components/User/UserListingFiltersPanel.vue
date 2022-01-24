@@ -82,8 +82,7 @@
       </div>
       <div class="col">
         <div class="space-2-v flex justify-content-around align-items-center">
-          <label>تاریخ ایجاد</label>
-          <datetime-picker
+          <!-- <datetime-picker
             type="datetime"
             v-model="createdAt"
             @change="changed"
@@ -91,16 +90,31 @@
             display-format="dddd jDD jMMMM jYYYY HH:mm"
             range
             clearable
+          /> -->
+          <base-datetime-picker
+            type="datetime"
+            label="تاریخ ایجاد"
+            v-model="createdAt"
+            @change="changed"
+            range
+            clearable
           />
         </div>
         <div class="space-2-v flex justify-content-around align-items-center">
-          <label class="space-2-h">تاریخ آخرین بروزرسانی</label>
-          <datetime-picker
+          <!-- <datetime-picker
             type="datetime"
             v-model="lastModifiedAt"
             @change="changed"
             format="YYYY-MM-DDTHH:mm:ss"
             display-format="dddd jDD jMMMM jYYYY HH:mm"
+            range
+            clearable
+          /> -->
+          <base-datetime-picker
+            type="datetime"
+            label="تاریخ آخرین بروزرسانی"
+            v-model="lastModifiedAt"
+            @change="changed"
             range
             clearable
           />
@@ -171,21 +185,22 @@ export default defineComponent({
   },
   methods: {
     changed() {
-      console.log('CHANGE');
       const filters = new GetUsersByFiltersRequest(
-        this.searchTerm,
-        this.createdAt[0],
-        this.createdAt[1],
-        this.lastModifiedAt[0],
-        this.lastModifiedAt[1],
-        this.hasImage,
-        this.hasEmail,
-        this.userState[0],
-        this.userRole[0],
-        this.createdByMe ? AuthService.getSubjectId() : null,
-        this.updatedByMe ? AuthService.getSubjectId() : null,
-        null,
-        null,
+        {
+          searchTerm: this.searchTerm,
+          createdAtFrom: this.createdAt[0],
+          createdAtTill: this.createdAt[1],
+          lastModifiedAtFrom: this.lastModifiedAt[0],
+          lastModifiedAtTill: this.lastModifiedAt[1],
+          hasImage: this.hasImage,
+          hasEmail: this.hasEmail,
+          state: this.userState[0],
+          role: this.userRole[0],
+          creatorId: this.createdByMe ? AuthService.getSubjectId() : null,
+          updaterId: this.lastModifiedByMe ? AuthService.getSubjectId() : null,
+          limit: 30,
+          offset: 0,
+        },
       );
       this.$emit('change', filters);
     },

@@ -2,6 +2,7 @@
   <div class="flex flex-row justify-content-start">
     <div class="space-h">
       <Button
+        v-if="isAdmin"
         @dblclick="deleteEntity"
         class="p-button-sm p-button-danger p-button-outlined"
       >
@@ -18,11 +19,9 @@
         <vue-feather type="archive"></vue-feather>
         <span class="space-h">آرشیو سازی</span>
       </Button>
-    </div>
-    <div class="space-h">
       <Button
-        v-if="!value.published"
-        @dblclick="isArtist ? cascadeArtistPublishCommandToArtworksDialogVisible = true : publish"
+        v-else
+        @dblclick="isArtist ? cascadeArtistPublishCommandToArtworksDialogVisible = true : publish()"
         class="p-button-sm p-button-danger p-button-outlined"
       >
         <vue-feather type="radio"></vue-feather>
@@ -55,6 +54,7 @@ import { AlbumDetails as AlbumDetailsDTO } from '@/classes/Library/DTOs/queries/
 import { TrackDetails as TrackDetailsDTO } from '@/classes/Library/DTOs/queries/TrackDetails';
 import { BandDetails as BandDetailsDTO } from '@/classes/Library/DTOs/queries/BandDetails';
 import { SingerDetails as SingerDetailsDTO } from '@/classes/Library/DTOs/queries/SingerDetails';
+import { AuthService } from '@/services/AuthService';
 
 export default defineComponent({
   name: 'library-sensitive-options-card',
@@ -71,6 +71,9 @@ export default defineComponent({
   computed: {
     isArtist() {
       return this.value instanceof SingerDetailsDTO || this.value instanceof BandDetailsDTO;
+    },
+    isAdmin() {
+      return AuthService.isAdmin();
     },
   },
   methods: {
@@ -101,6 +104,7 @@ export default defineComponent({
       });
     },
     publish() {
+      console.log('push me');
       let headerText = this.value.isPublished ? 'آرشیوسازی' : 'انتشار';
       let messageText = 'حذف یک هنرمند/اثر غیرقابل بازگشت است. مطمئن هستید؟';
       const acceptLabelText = 'بله. ادامه بده.';

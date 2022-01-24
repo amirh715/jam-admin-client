@@ -14,8 +14,6 @@ class ProfileService {
   public static async getProfileInfo(): Promise<ProfileDetails> {
     try {
       const { data } = await HttpService.get(`${ProfileService.PATHS.GET_PROFILE_INFO}/${AuthService.getSubjectId()}`);
-      console.log('data');
-      console.log(data);
       const result = new ProfileDetails(
         data.id,
         data.name,
@@ -49,11 +47,8 @@ class ProfileService {
       if (dto.name) {
         data.append('name', dto.name);
       }
-      if (dto.email) {
+      if (dto.email || dto.email.length === 0) {
         data.append('email', dto.email);
-      }
-      if (dto.removeEmail) {
-        data.append('removeEmail', _.toString(dto.removeEmail));
       }
       if (dto.removeProfileImage) {
         data.append('removeProfileImage', _.toString(dto.removeProfileImage));
@@ -61,6 +56,9 @@ class ProfileService {
       await HttpService.put(USER_PATHS.EDIT_USER, data);
       return Promise.resolve();
     } catch (error) {
+      if (error.response.data) {
+        return Promise.reject(error.response.data);
+      }
       return Promise.reject(error);
     }
   }
@@ -68,7 +66,8 @@ class ProfileService {
   public static async changeProfileImage(image: Blob): Promise<void> {
     try {
       const data = new FormData();
-      data.append(AuthService.getSubjectId(), image);
+      data.append('id', AuthService.getSubjectId());
+      data.append('profileImage', image);
       await HttpService.put(this.PATHS.CHANGE_PROFILE_IMAGE, data);
       return Promise.resolve();
     } catch (error) {
@@ -80,7 +79,7 @@ class ProfileService {
     try {
       const data = new FormData();
       data.append('id', AuthService.getSubjectId());
-      data.append('removeImage', 'TRUE');
+      data.append('removeProfileImage', 'true');
       await HttpService.put(this.PATHS.CHANGE_PROFILE_IMAGE, data);
       return Promise.resolve();
     } catch (error) {

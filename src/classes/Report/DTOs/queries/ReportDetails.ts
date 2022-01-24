@@ -14,47 +14,48 @@ class ReportDetails {
   public processorId: string;
   public processorName: string;
   public processorNote: string;
-  public assignedAt: string;
-  public processedAt: string;
-  public archivedAt: string;
-  public createdAt: string;
-  public lastModifiedAt: string;
+  public assignedAt: Date;
+  public processedAt: Date;
+  public archivedAt: Date;
+  public createdAt: Date;
+  public lastModifiedAt: Date;
 
   public constructor(
-    id: string,
-    message: string,
-    status: string,
-    type: string,
-    reporterId: string,
-    reporterName: string,
-    reportedEntityId: string,
-    reportedEntityTitle: string,
-    processorId: string,
-    processorName: string,
-    processorNote: string,
-    assignedAt: string,
-    processedAt: string,
-    archivedAt: string,
-    createdAt: string,
-    lastModifiedAt: string,
+    _props: {
+      id: string,
+      message: string,
+      status: string,
+      type: string,
+      reporterId: string,
+      reporterName: string,
+      reportedEntityId: string,
+      reportedEntityTitle: string,
+      processorId: string,
+      processorName: string,
+      processorNote: string,
+      assignedAt: string,
+      processedAt: string,
+      archivedAt: string,
+      createdAt: string,
+      lastModifiedAt: string,
+    },
   ) {
-    const jalali = JalaliDateTime();
-    this.id = id;
-    this.message = message;
-    this.status = ReportDetails.createReportStatus(status);
-    this.type = ReportDetails.createReportType(type);
-    this.reporterId = reporterId;
-    this.reporterName = reporterName;
-    this.reportedEntityId = reportedEntityId;
-    this.reportedEntityTitle = reportedEntityTitle;
-    this.processorId = processorId;
-    this.processorName = processorName;
-    this.processorNote = processorNote;
-    this.assignedAt = jalali.toFullText(new Date(assignedAt));
-    this.processedAt = jalali.toFullText(new Date(processedAt));
-    this.archivedAt = jalali.toFullText(new Date(archivedAt));
-    this.createdAt = jalali.toFullText(new Date(createdAt));
-    this.lastModifiedAt = jalali.toFullText(new Date(lastModifiedAt));
+    this.id = _props.id;
+    this.message = _props.message;
+    this.status = ReportDetails.createReportStatus(_props.status);
+    this.type = ReportDetails.createReportType(_props.type);
+    this.reporterId = _props.reporterId;
+    this.reporterName = _props.reporterName;
+    this.reportedEntityId = _props.reportedEntityId;
+    this.reportedEntityTitle = _props.reportedEntityTitle;
+    this.processorId = _props.processorId;
+    this.processorName = _props.processorName;
+    this.processorNote = _props.processorNote;
+    this.assignedAt = new Date(_props.assignedAt);
+    this.processedAt = new Date(_props.processedAt);
+    this.archivedAt = new Date(_props.archivedAt);
+    this.createdAt = new Date(_props.createdAt);
+    this.lastModifiedAt = new Date(_props.lastModifiedAt);
   }
 
   private static createReportStatus(status: string): ReportStatus {

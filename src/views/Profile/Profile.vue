@@ -1,12 +1,12 @@
 <template>
-  <Card style="width: 45rem; margin: auto;">
+  <Card style="width: 50rem; margin: auto;">
     <template #content>
       <div class="flex flex-column justify-content-center">
         <div class="flex justify-content-right align-items-center">
           <div class="space">
             <Avatar
               :image="profileImageSrc"
-              :label="!profileImageSrc && profileInfo.name[0]"
+              :label="!profileImageSrc && profileInfo.name[0].toUpperCase()"
               shape="circle"
               size="xlarge"
             />
@@ -18,7 +18,7 @@
         <div class="flex justify-content-around">
           <div class="flex align-items-center">
             <b class="space">موبایل:</b>
-            <p>{{profileInfo.mobile}}</p>
+            <number-displayer :value="profileInfo.mobile" />
           </div>
           <div class="flex justify-content-center align-items-center">
             <div v-if="profileInfo.email" class="flex align-items-center">
@@ -69,14 +69,14 @@
       </div>
     </template>
   </Card>
-  <Card v-if="isProfileEdited" style="width: 45rem; margin: 10px auto;">
+  <Card v-if="isProfileEdited" style="width: 50rem; margin: 10px auto;">
     <template #content>
       <div class="flex flex-column">
         <h4 class="text-right flex">
           <vue-feather type="user"></vue-feather>
           <span class="space-h">تغییر پروفایل</span>
         </h4>
-        <div class="flex justify-content-around">
+        <div class="flex justify-content-around align-items-center">
           <base-input-text
             type="text"
             label="نام"
@@ -87,6 +87,7 @@
           <base-input-text
             type="text"
             label="ایمیل"
+            :disabled="editProfileForm.removeEmail"
             v-model="editProfileForm.email"
             @change="v$.editProfileForm.email.$touch"
             :errors="v$.editProfileForm.email.$errors"
@@ -108,7 +109,7 @@
       </div>
     </template>
   </Card>
-  <Card style="width: 45rem; margin: 10px auto;">
+  <Card style="width: 50rem; margin: 10px auto;">
     <template #content>
       <div class="flex flex-column">
         <h4 class="text-right flex">
@@ -119,22 +120,32 @@
           <div>
             <base-image-input
               :editable="true"
+              :disabled="editProfileForm.removeProfileImage"
               :stencilProps="{aspectRatio: 1/1}"
-              @cropped="changeProfileImage"
+              @cropped="profileImageChanged"
             />
-            <div class="space-v-2">
-              <Button class="p-button-sm">
-                تغییر عکس پروفایل
-              </Button>
-            </div>
           </div>
-          <div>
-            <Button
-              class="p-button-sm p-button-outlined p-button-rounded"
-              @click="removeProfileImageClicked">
-                <vue-feather type="trash-2"></vue-feather>
-            </Button>
+          <div class="flex">
+            <span class="space-h">حذف عکس پروفایل</span>
+            <InputSwitch
+              :disbaled="editProfileForm.image"
+              v-model="editProfileForm.removeProfileImage"
+            />
           </div>
+        </div>
+        <div class="space-v">
+          <Button
+            v-if="editProfileForm.removeProfileImage"
+            @click="removeProfileImageClicked"
+            class="p-button-sm">
+              حذف عکس پروفایل
+          </Button>
+          <Button
+            v-if="editProfileForm.image"
+            @click="changeProfileImage"
+            class="p-button-sm">
+              تغییر عکس پروفایل
+          </Button>
         </div>
       </div>
     </template>
@@ -155,9 +166,10 @@ import AuthChangePasswordForm from '../../components/Auth/AuthChangePasswordForm
 import BaseInputText from '@/components/common/BaseInputText.vue';
 import { user } from '../../validators';
 import { EditUserProfileRequest } from '@/classes/User/DTOs/commands/EditUserProfileRequest';
+import NumberDisplayer from '@/components/common/NumberDisplayer.vue';
 
 export default defineComponent({
-  components: { AuthChangePasswordForm, BaseInputText },
+  components: { AuthChangePasswordForm, BaseInputText, NumberDisplayer },
   setup() {
     return {
       v$: useVuelidate(),
@@ -171,6 +183,8 @@ export default defineComponent({
         name: null,
         email: null,
         image: null,
+        removeEmail: false,
+        removeProfileImage: false,
       },
       showChangePasswordDialog: false,
       isProfileEdited: false,
@@ -244,7 +258,7 @@ export default defineComponent({
         null,
         this.editProfileForm.name,
         this.editProfileForm.email,
-        null,
+        this.editProfileForm.removeEmail,
         null,
         null,
         null,
@@ -256,6 +270,7 @@ export default defineComponent({
             detail: 'پروفایل شما با موفقیت اصلاح شد.',
             life: 4000,
           });
+          this.$router.push({ name: 'Home' });
         })
         .catch((error) => {
           this.$toast.add({
@@ -265,15 +280,15 @@ export default defineComponent({
           });
         });
     },
-    changeProfileImage(image: string) {
-      const blob = new Blob();
-      ProfileService.changeProfileImage(blob)
+    changeProfileImage() {
+      ProfileService.changeProfileImage(this.editProfileForm.image)
         .then(() => {
           this.$toast.add({
             severity: 'success',
             detail: 'عکس پروفایل با موفقیت تغییر کرد.',
             life: 4000,
           });
+          this.$router.push({ name: 'Home' });
         })
         .catch((error) => {
           this.$toast.add({
@@ -282,6 +297,9 @@ export default defineComponent({
             life: 4000,
           });
         });
+    },
+    profileImageChanged(image: Blob) {
+      this.editProfileForm.image = image;
     },
     removeProfileImageClicked() {
       this.$confirm.require({
@@ -298,6 +316,7 @@ export default defineComponent({
                 detail: 'عکس پروفایل شما حذف شد.',
                 life: 4000,
               });
+              this.$router.go();
             })
             .catch((error) => {
               this.$toast.add({

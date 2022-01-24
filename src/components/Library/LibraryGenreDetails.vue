@@ -34,8 +34,10 @@
       </Inplace>
     </div>
     <div class="space-2-v">
-      <div class="space-v">تاریخ ایجاد:‌ {{genre.createdAt}}</div>
-      <div class="space-v">تاریخ آخرین تغییر:‌ {{genre.lastModifiedAt}}</div>
+      <div class="space-v">تاریخ ایجاد:‌
+        <date-time-displayer :datetime="genre.createdAt" /></div>
+      <div class="space-v">تاریخ آخرین تغییر:‌
+        <date-time-displayer :datetime="genre.lastModifiedAt" /></div>
     </div>
     <div>
       <Button

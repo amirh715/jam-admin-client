@@ -4,14 +4,24 @@
       <template #content>
         <div class="grid">
           <div class="col-3">
-            <div class="image"></div>
+            <div class="image">
+              <Skeleton v-if="imageLoading" width="100%" height="100%"/>
+              <img v-else :src="imageSrc" style="width: 100%; height: 100%;"/>
+            </div>
           </div>
           <div class="col-9">
             <base-library-entity-details :entity="album" />
             <div class="flex space-2-v">
               <div class="flex">
                 <vue-feather type="calendar"></vue-feather>
-                <span class="space-h">{{album.releaseDate || 'تاریخ انتشار ندارد'}}</span>
+                <div class="space-h">
+                  <date-time-displayer
+                    v-if="album.releaseDate"
+                    :datetime="album.releaseDate"
+                    :options="{fullTextFormat: 'N Y'}"
+                  />
+                    <span v-else class="space-h">تاریخ انتشار ندارد</span>
+                </div>
               </div>
               <div class="flex space-2-h">
                 <vue-feather type="disc"></vue-feather>
@@ -30,7 +40,12 @@
               </div>
             </div>
             <div class="flex space-3-v">
-              <library-sensitive-options-card :value="artist || {}" />
+              <library-sensitive-options-card
+                :value="album"
+                @deleteEntity="deleteAlbum"
+                @publish="publish"
+                @archive="archive"
+              />
             </div>
             <div class="flex">
               <div class="space-h">
@@ -75,6 +90,7 @@ import BaseLibraryEntityDetails from './BaseLibraryEntityDetails.vue';
 import LibraryListingTable from './LibraryListingTable.vue';
 import LibrarySensitiveOptionsCard from './LibrarySensitiveOptionsCard.vue';
 import EditArtwork from './EditArtwork.vue';
+import { LibraryService } from '@/services/LibraryService';
 
 export default defineComponent({
   name: 'album-details',
@@ -90,15 +106,75 @@ export default defineComponent({
   data() {
     return {
       editArtworkDialogVisible: false,
+      imageLoading: false,
+      imageSrc: null,
     };
   },
   methods: {
     goToAlbumArtist() {
-      this.$router.push({ name: 'LibraryEntityDetails', params: { id: this.album.artist.id } });
+      this.$router.push({ name: 'LibraryEntityDetails', query: { id: this.album.artist.id } });
     },
     newAlbumTrack() {
       this.$router.push({ name: 'NewTrack', query: { albumId: this.album.id, albumTitle: this.album.title } });
     },
+    publish() {
+      LibraryService.publish(this.album.id)
+        .then(() => {
+          this.$router.push({ name: 'LibraryListing' });
+        })
+        .catch((err) => {
+          this.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 4000,
+          });
+        });
+    },
+    archive() {
+      LibraryService.archive(this.album.id)
+        .then(() => {
+          this.$router.push({ name: 'LibraryListing' });
+        })
+        .catch((err) => {
+          this.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 4000,
+          });
+        });
+    },
+    deleteAlbum() {
+      LibraryService.remove(this.album.id)
+        .then(() => {
+          this.$router.push({ name: 'LibraryListing' });
+        })
+        .catch((err) => {
+          this.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 4000,
+          });
+        });
+    },
+  },
+  mounted() {
+    this.imageLoading = true;
+    LibraryService.getImageById(this.album.id)
+      .then((image) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = () => {
+          this.imageSrc = reader.result;
+        };
+      })
+      .catch((err) => {
+        if (err.code === 404) {
+          console.log('404');
+        }
+      })
+      .finally(() => {
+        this.imageLoading = false;
+      });
   },
 });
 </script>

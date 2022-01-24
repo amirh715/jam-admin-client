@@ -7,6 +7,7 @@ class ArtistDetails extends LibraryEntityDetails {
   public constructor(
     _props: {
       id: string,
+      type: string,
       title: string,
       description: string,
       published: boolean,
@@ -14,11 +15,17 @@ class ArtistDetails extends LibraryEntityDetails {
       genres: GenreIdAndTitle[],
       monthlyPlayedCount: string,
       rate: string,
-      flag: string,
+      flagNote: string,
       totalPlayedCount: string,
-      duration: string,
+      duration: number,
       instagramId: string,
       imageSrc: string,
+      createdAt: string,
+      lastModifiedAt: string,
+      creatorId: string,
+      creatorName: string,
+      updaterId: string,
+      updaterName: string,
     },
   ) {
     super(

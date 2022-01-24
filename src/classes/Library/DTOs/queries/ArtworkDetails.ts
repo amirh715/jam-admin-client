@@ -11,6 +11,7 @@ class ArtworkDetails extends LibraryEntityDetails {
   public constructor(
     _props: {
       id: string,
+      type: string,
       title: string,
       description: string,
       published: boolean,
@@ -18,14 +19,20 @@ class ArtworkDetails extends LibraryEntityDetails {
       genres: GenreIdAndTitle[],
       monthlyPlayedCount: string,
       rate: string,
-      flag: string,
+      flagNote: string,
       totalPlayedCount: string,
-      duration: string,
+      duration: number,
       artist: LibraryEntityIdAndTitle,
       recordLabel: string,
       producer: string,
       releaseDate: Date,
       imageSrc: string,
+      createdAt: string,
+      lastModifiedAt: string,
+      creatorId: string,
+      creatorName: string,
+      updaterId: string,
+      updaterName: string,
     },
   ) {
     super(

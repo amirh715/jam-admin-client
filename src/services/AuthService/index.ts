@@ -44,6 +44,18 @@ class AuthService {
     return this.role;
   }
 
+  public isAdmin(): boolean {
+    return this.getRole() === UserRole.ADMIN;
+  }
+
+  public isLibraryManager(): boolean {
+    return this.getRole() === UserRole.LIBRARY_MANAGER;
+  }
+
+  public isSubscriber(): boolean {
+    return this.getRole() === UserRole.SUBSCRIBER;
+  }
+
   public async login(mobile : string, password : string, fcmToken: string)
   : Promise<string> {
     const data = new FormData();
@@ -76,7 +88,6 @@ class AuthService {
       await HttpService.post(this.PATHS.requestVerification, data);
       return Promise.resolve();
     } catch (error) {
-      console.log(typeof error);
       if (error.response) {
         return Promise.reject(error.response.data);
       }

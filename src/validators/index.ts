@@ -65,11 +65,11 @@ const report = {
 const notificationTitle = (value: string): boolean =>
   value.length > 0 && value.length < 50;
 const notificationMessage = (value: string) =>
-  value.length > 0 && value.length < 500;
+  !helpers.req(value) || (value.length > 0 && value.length < 500);
 const notificationRoute = (value: string): boolean =>
-  value.length > 0;
+  !helpers.req(value) || value.length > 0;
 const notificationRecipients = (value: string): boolean =>
-  value.length >= 0 && value.length < 5000;
+  value.length > 0 && value.length < 5000;
 const notificationScheduledOn = (value: Date): boolean =>
   value > new Date() && value < new Date(new Date().setMinutes(new Date().getHours() + 168));
 
@@ -81,9 +81,24 @@ const notification = {
   scheduledOn: notificationScheduledOn,
 };
 
+// showcase
+const showcaseTitle = (value: string): boolean =>
+  value.length > 0 && value.length < 20;
+const showcaseMessage = (value: string): boolean =>
+  !helpers.req(value) || (value.length > 0 && value.length < 50);
+const showcaseIndex = (value: number): boolean =>
+  value > 0 && value < 15;
+
+const showcase = {
+  title: showcaseTitle,
+  message: showcaseMessage,
+  index: showcaseIndex,
+};
+
 export {
   library,
   user,
   report,
   notification,
+  showcase,
 };

@@ -1,6 +1,5 @@
-
 class CreateShowcaseRequest {
-  index: Number;
+  index: number;
   title: string;
   message: string;
   route: string;
@@ -8,12 +7,12 @@ class CreateShowcaseRequest {
 
   public constructor(
     _props: {
-      index: Number,
+      index: number,
       title: string,
       message: string,
       route: string,
       image: Blob,
-    }
+    },
   ) {
     this.index = _props.index;
     this.title = _props.title;

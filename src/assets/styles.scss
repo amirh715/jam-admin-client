@@ -68,6 +68,7 @@ body {
   background-color: var(--surface-b);
   direction: rtl;
   height: 100%;
+  overflow-y: hidden;
   // margin: 0;
 }
 
@@ -143,4 +144,27 @@ p, span, h1, h2, h3, h4, h5, h6, input, button, label, b, li, small, textarea, d
 
 .p-rating-icon {
   margin-left: 0.5rem !important;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }

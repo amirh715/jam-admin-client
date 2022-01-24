@@ -19,7 +19,9 @@
         <div>
           <base-multi-select-input
             label="نوع"
-            :options="['آلبوم', 'آهنگ', 'گروه', 'خواننده']"
+            v-model="type"
+            :options="typeOptions"
+            optionLabel="displayValue"
             :selectionLimit="1"
             @change="changed"
           />
@@ -64,6 +66,9 @@
           <base-multi-select-input
             label="سبک ها"
             @change="changed"
+            v-model="genres"
+            :options="genreOptions"
+            optionLabel="title"
           />
         </div>
         <div style="margin: 1.5rem auto;">
@@ -89,8 +94,8 @@
             <span class="space-h">از:</span>
             <InputNumber
               v-model="totalPlayedCountFrom"
-              @change="changed"
-              showButtons="true"
+              @input="changed"
+              :showButtons="true"
               :min="0"
               :max="1000000"
               :step="100"
@@ -100,8 +105,8 @@
             <span class="space-h">تا:</span>
             <InputNumber
               v-model="totalPlayedCountTo"
-              @change="changed"
-              showButtons="true"
+              @input="changed"
+              :showButtons="true"
               :min="1"
               :max="1000000"
               :step="100"
@@ -130,26 +135,35 @@
         </div>
         <p>تاریخ ایجاد</p>
         <div>
-          <datetime-picker
+          <base-datetime-picker
+            v-model="createdAt"
+            @change="changed"
             type="date"
             range
-            cancelable
-            @change="changed"
+            clearable
           />
+          Value: {{createdAt}}
         </div>
         <p>تاریخ آخرین بروز رسانی</p>
         <div>
-          <datetime-picker
+          <base-datetime-picker
+            v-model="lastModifiedAt"
             @change="changed"
+            type="datetime"
+            range
+            clearable
           />
         </div>
       </div>
       <div class="col">
         <p>تاریخ انتشار (ویژه آثار)</p>
         <div>
-          <datetime-picker
-            @change="changed"
+          <base-datetime-picker
             v-model="releaseDate"
+            @change="changed"
+            type="datetime"
+            range
+            clearable
           />
         </div>
         <div class="space-3-v">
@@ -175,6 +189,8 @@ import { defineComponent } from 'vue';
 import { GetLibraryEntitiesByFiltersRequest } from '@/classes/Library/DTOs/commands/GetLibraryEntitiesByFiltersRequest';
 import { AuthService } from '@/services/AuthService';
 import BaseMultiSelectInput from '../common/BaseMultiSelectInput.vue';
+import { LibraryService } from '@/services/LibraryService';
+import { GenreDetails } from '@/classes/Library/DTOs/queries/GenreDetails';
 
 export default defineComponent({
   components: { BaseMultiSelectInput },
@@ -186,31 +202,52 @@ export default defineComponent({
       published: null,
       hasImage: null,
       flagged: null,
-      genreIds: null,
+      genres: null,
       rateFrom: null,
       rateTo: null,
       totalPlayedCountFrom: null,
-      totalPlayedCountTill: null,
-      createdByMe: false,
+      totalPlayedCountTo: null,
+      createdByMe: null,
       lastModifiedByMe: null,
       createdAt: [],
       lastModifiedAt: [],
       releaseDate: [],
+      typeOptions: [
+        {
+          value: 'A',
+          displayValue: 'آلبوم',
+        },
+        {
+          value: 'T',
+          displayValue: 'آهنگ',
+        },
+        {
+          value: '‌B',
+          displayValue: 'گروه',
+        },
+        {
+          value: 'S',
+          displayValue: 'خواننده',
+        },
+      ],
+      genreOptions: [],
+      genreOptionsLoading: true,
+      genreOptionsPlaceholderText: 'منتظر باشید...',
     };
   },
   methods: {
     changed() {
       const filters = new GetLibraryEntitiesByFiltersRequest(
-        this.type,
+        this.type && this.type[0] && this.type[0].value,
         this.searchTerm,
         this.published,
         this.flagged,
         this.hasImage,
-        this.genreIds,
+        this.genres,
         this.rateFrom,
         this.rateTo,
         this.totalPlayedCountFrom,
-        this.totalPlayedCountTill,
+        this.totalPlayedCountTo,
         this.durationFrom,
         this.durationTo,
         this.artistId,
@@ -231,21 +268,30 @@ export default defineComponent({
       this.published = null;
       this.hasImage = null;
       this.flagged = null;
-      this.genreIds = null;
+      this.genres = null;
       this.rateFrom = null;
       this.rateTo = null;
       this.totalPlayedCountFrom = null;
-      this.totalPlayedCountTill = null;
+      this.totalPlayedCountTo = null;
       this.createdByMe = null;
       this.lastModifiedByMe = null;
-      this.createdAtFrom = null;
-      this.createdAtTill = null;
-      this.lastModifiedAtFrom = null;
-      this.lastModifiedAtTill = null;
-      this.releaseDateFrom = null;
-      this.releaseDateTill = null;
+      this.createdAt = [];
+      this.lastModifiedAt = [];
+      this.releaseDate = [];
       this.changed();
     },
+  },
+  mounted() {
+    LibraryService.fetchAndFlattenGenres()
+      .then((genres: GenreDetails[]) => {
+        this.genreOptions = genres;
+      })
+      .catch((err) => {
+        this.genreInputPlaceholderText = err.message;
+      })
+      .finally(() => {
+        this.genreOptionsLoading = false;
+      });
   },
 });
 </script>

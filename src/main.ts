@@ -36,20 +36,26 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Panel from 'primevue/panel';
 import Skeleton from 'primevue/skeleton';
+import VirtualScroller from 'primevue/virtualscroller';
+import Slider from 'primevue/slider';
 
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
 
 import Vue3PersianDatetimePicker from 'vue3-persian-datetime-picker';
+import DateTimeDisplayer from './components/common/DateTimeDisplayer.vue';
+import NumberDisplayer from './components/common/NumberDisplayer.vue';
 import BaseInputText from './components/common/BaseInputText.vue';
 import BaseTextarea from './components/common/BaseTextarea.vue';
 import BaseTagsInput from './components/common/BaseTagsInput.vue';
 import BaseImageInput from './components/common/BaseImageInput.vue';
 import BaseMultiSelectInput from './components/common/BaseMultiSelectInput.vue';
 import BaseImageCropper from './components/common/BaseImageCropper.vue';
+import BaseDatetimePicker from './components/common/BaseDatetimePicker.vue';
 import AppOfflineNotice from './components/core/AppOfflineNotice.vue';
 import BaseImagePreview from './components/common/BaseImagePreview.vue';
 import NoDataNotice from './components/common/NoDataNotice.vue';
+import Player from './components/Library/Player.vue';
 
 import App from './App.vue';
 // import './registerServiceWorker';
@@ -62,6 +68,11 @@ import 'primevue/resources/themes/vela-orange/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
+import { AppManager } from './services/AppManager';
+import { AudioManager } from './services/AudioManager';
+import { PlayedTrack } from './persistence/PlayedTrack';
+import { Database } from './persistence';
+import { LibraryService } from './services/LibraryService';
 
 const app = createApp(App)
   .use(store)
@@ -105,25 +116,43 @@ app.component('TabView', TabView);
 app.component('TabPanel', TabPanel);
 app.component('Panel', Panel);
 app.component('Skeleton', Skeleton);
+app.component('VirtualScroller', VirtualScroller);
+app.component('Slider', Slider);
 
 app.component('datetime-picker', Vue3PersianDatetimePicker);
+app.component('DateTimeDisplayer', DateTimeDisplayer);
+app.component('NumberDisplayer', NumberDisplayer);
 app.component('BaseInputText', BaseInputText);
 app.component('BaseTextarea', BaseTextarea);
 app.component('BaseTagsInput', BaseTagsInput);
 app.component('BaseImageInput', BaseImageInput);
 app.component('BaseMultiSelectInput', BaseMultiSelectInput);
 app.component('BaseImageCropper', BaseImageCropper);
+app.component('BaseDatetimePicker', BaseDatetimePicker);
 app.component('AppOfflineNotice', AppOfflineNotice);
 app.component('BaseImagePreview', BaseImagePreview);
 app.component('NoDataNotice', NoDataNotice);
+app.component('Player', Player);
 
 app.component(VueFeather.name || '', VueFeather);
 
 app.mount('#app');
 
+AudioManager.addEventListener('trackPlayed', () => {
+  const playedTrack = new PlayedTrack(AudioManager.getCurrentTrack().id);
+  Database.playedTracks.add(playedTrack).then(async (v) => {
+    await LibraryService.trackPlayed(playedTrack);
+    await Database.playedTracks.delete(v);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+AppManager.syncPlayedTracks();
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('http://localhost:8080/sw.js', { scope: './' })
+    navigator.serviceWorker.register('/sw.js', { scope: './' })
       .then((registeration) => console.log('registered', registeration))
       .catch((err) => console.log(err));
   });

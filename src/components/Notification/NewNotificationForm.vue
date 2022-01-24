@@ -15,6 +15,7 @@
             <base-multi-select-input
               label="نوع نوتیفیکیشن"
               v-model="type"
+              optionLabel="valueForDisplay"
               :options="notificationTypes"
               :selectionLimit="1"
             />
@@ -26,7 +27,7 @@
             :errors="v$.route.$errors"
           />
           <span class="space">زمان ارسال</span>
-          <datetime-picker
+          <base-datetime-picker
             type="datetime"
             v-model="scheduledOn"
             @change="test(e)"
@@ -42,12 +43,19 @@
           @change="v$.message.$touch"
           :errors="v$.message.$errors"
         />
-        <base-multi-select-input
-          label="مخاطبان"
-          v-model="recipients"
-          @change="v$.recipients.$touch"
-          :errors="v$.recipients.$errors"
-        />
+        <div class="space-v">
+          <span class="space-v">فایل لیست مخاطبان (فایل csv)</span>
+          <FileUpload
+            @select="recipientsFileChanged"
+            accept="text/csv"
+            :fileLimit="1"
+            :showUploadButton="false"
+            chooseLabel="انتخاب"
+            cancelLabel="انصراف"
+          />
+          <span>تعداد مخاطبان:‌ {{recipients && recipients.length}}</span>
+          <span>{{recipients}}</span>
+        </div>
       </div>
     </div>
     <div class="space-2-v"><hr/></div>
@@ -67,11 +75,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
+import * as _ from 'lodash';
 import { helpers, required } from '@vuelidate/validators';
 import { notification } from '@/validators';
 import { NotificationService } from '@/services/NotificationService';
-import BaseInputText from '../common/BaseInputText.vue';
-import BaseTextarea from '../common/BaseTextarea.vue';
 import { CreateNotificationRequest } from '@/classes/Notification/DTOs/commands/CreateNotificationRequest';
 import { SenderType } from '@/classes/Notification/Types/SenderType';
 
@@ -79,7 +86,7 @@ export default defineComponent({
   setup() {
     return { v$: useVuelidate() };
   },
-  components: { BaseInputText, BaseTextarea },
+  emits: ['submit'],
   name: 'new-notification-form',
   data() {
     return {
@@ -89,7 +96,20 @@ export default defineComponent({
       route: null,
       scheduledOn: null,
       recipients: [],
-      notificationTypes: ['FCM', 'SMS', 'ایمیل'],
+      notificationTypes: [
+        {
+          value: 'SMS',
+          valueForDisplay: 'پیامک',
+        },
+        {
+          value: 'FCM',
+          valueForDisplay: 'FCM',
+        },
+        {
+          value: 'EMAIL',
+          valueForDisplay: 'ایمیل',
+        },
+      ],
       minScheduledOn: new Date(new Date().setMinutes(new Date().getMinutes() + 5)),
       maxScheduledOn: new Date(new Date().setDate(new Date().getDate() + 7)),
     };
@@ -113,7 +133,7 @@ export default defineComponent({
   methods: {
     submit() {
       const dto = new CreateNotificationRequest(
-        this.type,
+        this.type[0] && this.type[0].value,
         this.title,
         this.message,
         this.route,
@@ -129,6 +149,11 @@ export default defineComponent({
             detail: 'نوتیفیکیشن با موفقیت ایجاد شد.',
             life: 4000,
           });
+          // poor idea
+          this.$router.push({ name: 'Home' });
+          this.$router.push({ name: 'NotificationListing' });
+          // #####
+          this.$emit('submit');
         })
         .catch((err) => {
           this.$toast.add({
@@ -137,6 +162,15 @@ export default defineComponent({
             life: 4000,
           });
         });
+    },
+    recipientsFileChanged(event) {
+      const reader = new FileReader();
+      reader.readAsText(event.files[0]);
+      reader.onloadend = () => {
+        const raw = reader.result as string;
+        this.recipients = _.split(raw, /\r?\n|\r/);
+        this.recipients.pop();
+      };
     },
     test(e) {
       console.log(this.scheduledOn);

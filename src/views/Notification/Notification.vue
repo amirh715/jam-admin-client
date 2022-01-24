@@ -19,7 +19,7 @@
         </div>
     </Button>
     <Dialog v-model:visible="visible" :style="{width: '40vw'}">
-      <new-notification-form />
+      <new-notification-form @submit="visible = false" />
     </Dialog>
   </div>
   <router-view></router-view>

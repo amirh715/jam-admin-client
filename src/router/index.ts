@@ -21,6 +21,9 @@ import Notification from '../views/Notification/Notification.vue';
 import NotificationListing from '../views/Notification/NotificationListing.vue';
 import User from '@/views/User/User.vue';
 import UserListing from '@/views/User/UserListing.vue';
+import LoginAudit from '@/views/User/LoginAudit.vue';
+import Showcase from '@/views/Showcase/Showcase.vue';
+import ShowcaseListing from '@/views/Showcase/ShowcaseListing.vue';
 
 const routes: Array<RouteRecordRaw> = [
   // Home Route
@@ -64,6 +67,13 @@ const routes: Array<RouteRecordRaw> = [
         path: 'genres/listing',
         name: 'GenreListing',
         component: LibraryGenreListing,
+        beforeEnter: (to, from, next) => {
+          if (AuthService.isAdmin()) {
+            next();
+          } else {
+            next({ name: 'Home' });
+          }
+        },
       },
     ],
   },
@@ -72,11 +82,23 @@ const routes: Array<RouteRecordRaw> = [
     path: '/user',
     name: 'User',
     component: User,
+    beforeEnter: (to, from, next) => {
+      if (AuthService.isAdmin()) {
+        next();
+      } else {
+        next({ name: 'Home' });
+      }
+    },
     children: [
       {
-        path: '',
+        path: 'listing',
         name: 'UserListing',
         component: UserListing,
+      },
+      {
+        path: 'login/listing',
+        name: 'LoginListing',
+        component: LoginAudit,
       },
     ],
   },
@@ -84,6 +106,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/notification',
     name: 'Notification',
     component: Notification,
+    beforeEnter: (to, from, next) => {
+      if (AuthService.isAdmin()) {
+        next();
+      } else {
+        next({ name: 'Home' });
+      }
+    },
     children: [
       {
         path: '',
@@ -103,6 +132,25 @@ const routes: Array<RouteRecordRaw> = [
         component: ReportsListing,
       },
     ],
+  },
+  {
+    path: '/showcase',
+    name: 'Showcase',
+    component: Showcase,
+    children: [
+      {
+        path: '',
+        name: 'ShowcaseListing',
+        component: ShowcaseListing,
+      },
+    ],
+    beforeEnter: (to, from, next) => {
+      if (AuthService.isAdmin()) {
+        next();
+      } else {
+        next({ name: 'Home' });
+      }
+    },
   },
   {
     path: '/auth',

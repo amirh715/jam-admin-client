@@ -8,6 +8,7 @@ class BandDetails extends ArtistDetails {
   public constructor(
     _props: {
       id: string,
+      type: string,
       title: string,
       description: string,
       published: boolean,
@@ -15,12 +16,18 @@ class BandDetails extends ArtistDetails {
       genres: GenreIdAndTitle[],
       monthlyPlayedCount: string,
       rate: string,
-      flag: string,
+      flagNote: string,
       totalPlayedCount: string,
-      duration: string,
+      duration: number,
       instagramId: string,
       members: LibraryEntitySummary[],
       imageSrc: string,
+      createdAt: string,
+      lastModifiedAt: string,
+      creatorId: string,
+      creatorName: string,
+      updaterId: string,
+      updaterName: string,
     },
   ) {
     super(

@@ -1,7 +1,8 @@
 <template>
-  <div class="flex flex-column justify-content-start align-items-start space">
+  <div class="flex flex-column space">
     <div class="space-v">
-      <h3>سبک جدید</h3>
+      <h3 class="text-center">سبک جدید</h3>
+      <div><hr/></div>
     </div>
     <div class="space-v">
       <base-input-text
@@ -28,7 +29,8 @@
         :selectionLimit="1"
       />
     </div>
-    <div class="space-v">
+    <div class="space-v"><hr/></div>
+    <div class="space-v flex justify-content-center">
       <Button
         class="p-button p-button-sm"
         :disabled="v$.newGenre.$invalid || !$store.state.isOnline"

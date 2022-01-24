@@ -11,25 +11,27 @@ class LoginDetails {
   public os: string;
 
   public constructor(
-    userId: string,
-    userName: string,
-    userMobile: string,
-    ipAddress: string,
-    wasSuccessful: boolean,
-    failureReason: string,
-    attemptedAt: Date,
-    platform: string,
-    os: string
+    _props: {
+      userId: string,
+      userName: string,
+      userMobile: string,
+      ipAddress: string,
+      wasSuccessful: boolean,
+      failureReason: string,
+      attemptedAt: string,
+      platform: string,
+      os: string,
+    }
   ) {
-    this.userId = userId;
-    this.userName = userName;
-    this.userMobile = userMobile;
-    this.ipAddress = ipAddress;
-    this.wasSuccessful = wasSuccessful;
-    this.failureReason = failureReason;
-    this.attemptedAt = attemptedAt;
-    this.platform = platform;
-    this.os = os;
+    this.userId = _props.userId;
+    this.userName = _props.userName;
+    this.userMobile = _props.userMobile;
+    this.ipAddress = _props.ipAddress;
+    this.wasSuccessful = _props.wasSuccessful;
+    this.failureReason = _props.failureReason;
+    this.attemptedAt = new Date(_props.attemptedAt);
+    this.platform = _props.platform;
+    this.os = _props.os;
   }
 
 }

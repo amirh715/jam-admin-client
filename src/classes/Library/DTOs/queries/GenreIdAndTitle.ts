@@ -6,9 +6,8 @@ class GenreIdAndTitle {
     this.id = id;
     this.title = title;
   }
-
 }
 
 export {
-  GenreIdAndTitle
-}
+  GenreIdAndTitle,
+};

@@ -179,7 +179,7 @@ export default defineComponent({
       LibraryService.fetchGenres()
         .then((allGenres) => {
           allGenres.forEach((genre) => {
-            this.flattenGenres(genre).forEach((genre: GenreDetails) => {
+            this.flattenGenre(genre).forEach((genre: GenreDetails) => {
               this.allGenres.push(genre);
             });
           });
@@ -197,10 +197,10 @@ export default defineComponent({
           this.waitingForGenresToLoad = false;
         });
     },
-    flattenGenres(genre: GenreDetails) {
+    flattenGenre(genre: GenreDetails) {
       const genres = [genre];
       genre.subGenres.forEach((genre) => {
-        this.flattenGenres(genre).forEach((sub) => {
+        this.flattenGenre(genre).forEach((sub) => {
           genres.push(sub);
         });
       });

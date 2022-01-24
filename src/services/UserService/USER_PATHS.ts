@@ -5,8 +5,8 @@ enum USER_PATHS {
   EDIT_USER = '/user/',
   ACTIVATE_BLOCK_USER = '/user/activate-block',
   GET_PROFILE_IMAGE = '/user/image/',
-  GET_LOGIN_AUDITS = '/user/',
-  GET_ALL_LOGINS = '/user/',
+  GET_LOGIN_AUDITS = '/user/logins/',
+  GET_ALL_LOGINS = '/user/logins/',
   REMOVE_USER = '/user/',
   CHANGE_PASSWORD = '/user/change-password',
 }

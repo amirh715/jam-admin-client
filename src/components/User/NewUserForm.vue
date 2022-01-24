@@ -53,7 +53,8 @@
         <base-image-input
           label="انتخاب عکس پروفایل"
           v-model="image"
-          editable
+          @cropped="imageCropped"
+          :editable="true"
           :stencilProps="{aspectRatio: 1/1}"
         />
       </div>
@@ -145,6 +146,9 @@ export default defineComponent({
         .finally(() => {
           this.waiting = false;
         });
+    },
+    imageCropped(image: Blob) {
+      this.image = image;
     },
   },
 });

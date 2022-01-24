@@ -60,8 +60,15 @@
                 <p v-else>لیریک ندارد</p>
               </div>
             </div>
-            <div class="flex">
-              <player :src="audioSrc" />
+            <div class="flex space-2-v">
+              <Button @click="playButtonClicked" class="p-button-link">
+                <vue-feather
+                  :type="
+                    isThisTrackBeingPlayed &&
+                    $store.state.player.isPlaying ? 'pause-circle' : 'play-circle'"
+                  size="3rem"
+                ></vue-feather>
+              </Button>
             </div>
             <div class="space-2-v">
               <library-sensitive-options-card
@@ -101,17 +108,16 @@ import { defineComponent } from 'vue';
 import { TrackDetails as TrackDetailsDTO } from '@/classes/Library/DTOs/queries/TrackDetails';
 import BaseLibraryEntityDetails from './BaseLibraryEntityDetails.vue';
 import LibrarySensitiveOptionsCard from './LibrarySensitiveOptionsCard.vue';
-import Player from '@/components/Library/Player.vue';
 import { LibraryService } from '@/services/LibraryService';
 import EditArtwork from './EditArtwork.vue';
 
 export default defineComponent({
-  name: 'album-details',
+  name: 'track-details',
+  emits: ['change'],
   components: {
     BaseLibraryEntityDetails,
     LibrarySensitiveOptionsCard,
     EditArtwork,
-    Player,
   },
   props: {
     track: TrackDetailsDTO,
@@ -128,13 +134,26 @@ export default defineComponent({
     isAlbumTrack() {
       return this.track.album;
     },
+    isThisTrackBeingPlayed() {
+      return !this.$store.state.player.isStopped &&
+        this.$store.state.player.currentTrack.id === this.track.id;
+    },
   },
   methods: {
     goToTrackAlbum() {
-      this.$router.push({ name: 'AlbumDetails', params: { id: this.track.album.id } });
+      this.$router.push({ name: 'LibraryEntityDetails', query: { id: this.track.album.id } });
     },
     goToTrackArtist() {
-      this.$router.push({ name: 'LibraryEntityDetails', params: { id: this.track.artist.id } });
+      this.$router.push({ name: 'LibraryEntityDetails', query: { id: this.track.artist.id } });
+    },
+    playButtonClicked() {
+      if (!this.isThisTrackBeingPlayed) {
+        this.$store.dispatch('PLAY', this.track);
+      } else if (this.isThisTrackBeingPlayed && this.$store.state.player.isPlaying) {
+        this.$store.dispatch('PAUSE');
+      } else {
+        this.$store.dispatch('RESUME');
+      }
     },
     fetchTrackAudio() {
       LibraryService.getTrackAudio(this.track.id)
@@ -179,6 +198,7 @@ export default defineComponent({
             detail: 'آهنگ با موفقیت منتشر شد.',
             life: 4000,
           });
+          this.$emit('change');
         })
         .catch((err) => {
           this.$toast.add({
@@ -191,12 +211,12 @@ export default defineComponent({
     archive() {
       LibraryService.archive(this.track.id)
         .then(() => {
-          this.$router.push({ name: 'LibraryListing' });
           this.$toast.add({
             severity: 'success',
             detail: 'آهنگ با موفقیت آرشیو شد.',
             life: 4000,
           });
+          this.$emit('change');
         })
         .catch((err) => {
           this.$toast.add({

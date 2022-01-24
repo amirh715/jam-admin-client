@@ -1,3 +1,5 @@
+import { GenreDetails } from '../queries/GenreDetails';
+
 class EditArtworkRequest {
   public id: string;
   public title: string;
@@ -7,16 +9,16 @@ class EditArtworkRequest {
   public flag: string;
   public recordLabel: string;
   public producer: string;
-  public releaseDate: Date;
+  public releaseDate: string;
   public lyrics: string;
   public removeImage: boolean;
-  public image: any;
+  public image: Blob;
 
   public constructor(
     id: string,
     title: string,
     description: string,
-    genreIds: string[],
+    genres: GenreDetails[],
     tags: string[],
     flag: string,
     recordLabel: string,
@@ -24,24 +26,23 @@ class EditArtworkRequest {
     releaseDate: Date,
     lyrics: string,
     removeImage: boolean,
-    image: any
+    image: Blob,
   ) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.genreIds = genreIds;
+    this.genreIds = genres && genres.map((genre) => genre.id);
     this.tags = tags;
     this.flag = flag;
     this.recordLabel = recordLabel;
     this.producer = producer;
-    this.releaseDate = releaseDate;
+    this.releaseDate = releaseDate && releaseDate.toString();
     this.lyrics = lyrics;
     this.removeImage = removeImage;
     this.image = image;
   }
-
 }
 
 export {
-  EditArtworkRequest
-}
+  EditArtworkRequest,
+};

@@ -15,8 +15,8 @@
     <div v-if="note" class="note">
       <small>{{note}}</small>
     </div>
-    <div v-if="errors && errors.length > 0" class="error">
-      <b v-for="err of errors" :key="err.$message">{{err.$message}}</b>
+    <div v-if="error" class="error">
+      <span>{{error}}</span>
     </div>
   </div>
 </template>
@@ -30,7 +30,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'base-multi-select-input',
-  emits: ['update:modelValue'],
+  emits: ['change', 'update:modelValue'],
   props: {
     modelValue: Array,
     options: Array,
@@ -41,14 +41,13 @@ export default defineComponent({
     disabled: Boolean,
     note: String,
     loading: Boolean,
-    errors: Array,
+    error: String,
     selectionLimit: Number,
   },
   methods: {
     changed(event) {
-      console.log(event);
-      console.log(event.value);
       this.$emit('update:modelValue', event.value);
+      this.$emit('change', event.value);
     },
   },
 });

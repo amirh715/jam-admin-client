@@ -4,9 +4,8 @@ class GetUserByIdRequest {
   public constructor(id: string) {
     this.id = id;
   }
-
 }
 
 export {
-  GetUserByIdRequest
-}
+  GetUserByIdRequest,
+};

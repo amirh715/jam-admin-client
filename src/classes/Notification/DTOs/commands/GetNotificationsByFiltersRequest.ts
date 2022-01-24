@@ -9,10 +9,10 @@ class GetNotificationsByFiltersRequest {
   public lastModifiedAtTill: Date;
   public scheduledOnFrom: Date;
   public scheduledOnTill: Date;
-  public type: NotificationType;
+  public type: string;
   public isSent :boolean;
   public withUndeliveredRecipients: boolean;
-  public senderType: SenderType;
+  public senderType: string;
 
   public constructor(
     searchTerm: string,
@@ -34,10 +34,10 @@ class GetNotificationsByFiltersRequest {
     this.lastModifiedAtTill = lastModifiedAtTill;
     this.scheduledOnFrom = scheduledOnFrom;
     this.scheduledOnTill = scheduledOnTill;
-    this.type = type;
+    this.type = type && type.toString();
     this.isSent = isSent;
     this.withUndeliveredRecipients = withUndeliveredRecipients;
-    this.senderType = senderType;
+    this.senderType = senderType && senderType.toString();
   }
 }
 

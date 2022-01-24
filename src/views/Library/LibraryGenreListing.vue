@@ -25,8 +25,6 @@ import { useVuelidate } from '@vuelidate/core';
 import { LibraryService } from '@/services/LibraryService';
 import { GenreDetails } from '@/classes/Library/DTOs/queries/GenreDetails';
 import { IBusinessError } from '@/classes/common/IBusinessError';
-import { library } from '../../validators';
-import { CreateGenreRequest } from '@/classes/Library/DTOs/commands/CreateGenreRequest';
 import LibraryGenreDetails from '@/components/Library/LibraryGenreDetails.vue';
 import LibraryNewGenreForm from '@/components/Library/LibraryNewGenreForm.vue';
 

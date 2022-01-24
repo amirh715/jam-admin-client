@@ -9,6 +9,7 @@ class AlbumDetails extends ArtworkDetails {
   public constructor(
     _props: {
       id: string,
+      type: string,
       title: string,
       description: string,
       published: boolean,
@@ -16,15 +17,21 @@ class AlbumDetails extends ArtworkDetails {
       genres: GenreIdAndTitle[],
       monthlyPlayedCount: string,
       rate: string,
-      flag: string,
+      flagNote: string,
       totalPlayedCount: string,
-      duration: string,
+      duration: number,
       artist: LibraryEntityIdAndTitle,
       recordLabel: string,
       releaseDate: Date,
       producer: string,
       tracks: LibraryEntitySummary[],
       imageSrc: string,
+      createdAt: string,
+      lastModifiedAt: string,
+      creatorId: string,
+      creatorName: string,
+      updaterId: string,
+      updaterName: string,
     },
   ) {
     super(

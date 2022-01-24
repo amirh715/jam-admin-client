@@ -22,12 +22,15 @@ class NotificationService {
       const data = new FormData();
       data.append('type', dto.type.toString());
       data.append('title', dto.title);
-      data.append('scheduledOn', dto.scheduledOn.toString());
+      data.append('scheduledOn', _.toString(dto.scheduledOn));
       if (dto.message) {
         data.append('message', dto.message);
       }
       if (dto.route) {
         data.append('route', dto.route);
+      }
+      if (dto.recipients) {
+        data.append('recipients', JSON.stringify(dto.recipients));
       }
       await HttpService.post(this.PATHS.CREATE_NEW_NOTIFICATION, data);
       return Promise.resolve();
@@ -43,11 +46,10 @@ class NotificationService {
     try {
       const data = new FormData();
       data.append('id', dto.id);
-      data.append('type', dto.type.toString());
       if (dto.title) {
         data.append('title', dto.title);
       }
-      if (dto.message) {
+      if (dto.message || dto.message.length === 0) {
         data.append('message', dto.message);
       }
       if (dto.route) {
@@ -59,6 +61,7 @@ class NotificationService {
       await HttpService.put(this.PATHS.EDIT_NOTIFICATION, data);
       return Promise.resolve();
     } catch (err) {
+      console.log(err);
       if (err.response.data) {
         return Promise.reject(err.response.data);
       }
@@ -73,8 +76,11 @@ class NotificationService {
       _.forOwn(_.omitBy(filters, _.isNil), (value, key) => {
         query += `${key}=${value}&`;
       });
+      // _.forOwn(filters, (value, key) => {
+      //   query += `${key}=${value}&`;
+      // });
       const { data } = await HttpService.get(this.PATHS.GET_NOTIFICATIONS_BY_FILTERS, query);
-      return Promise.resolve(data);
+      return Promise.resolve(_.orderBy(data, ['scheduledOn'], ['desc']));
     } catch (err) {
       if (err.response.data) {
         return Promise.reject(err.response.data);
@@ -90,7 +96,7 @@ class NotificationService {
         console.log(dto, v, k);
       });
       const { data } = await HttpService.get(this.PATHS.GET_NOTIFICATIONS_OF_RECIPIENTS, '');
-      return Promise.resolve(data);
+      return Promise.resolve(_.orderBy(data, ['scheduledOn'], ['desc']));
     } catch (err) {
       if (err.response.data) {
         return Promise.reject(err.response.data);

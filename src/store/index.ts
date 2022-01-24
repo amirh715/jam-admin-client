@@ -3,6 +3,7 @@ import { decode } from 'jsonwebtoken';
 import { AuthService } from '@/services/AuthService';
 import { COMMIT_TYPES } from './COMMIT_TYPES';
 import { UserRole } from '@/classes/User/Types/UserRole';
+import { player } from '@/store/modules/player';
 
 export default createStore({
   state: {
@@ -44,5 +45,6 @@ export default createStore({
     },
   },
   modules: {
+    player,
   },
 });

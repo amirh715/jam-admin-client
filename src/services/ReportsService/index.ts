@@ -19,7 +19,7 @@ class ReportsService {
       await HttpService.put(REPORTS_PATH.PROCESS, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response) {
+      if (err.response.data) {
         return Promise.reject(err.response.data);
       }
       return Promise.reject(err);
@@ -32,26 +32,8 @@ class ReportsService {
       let query = '';
       _.forOwn(filters, (value, key) => { query += `?${key}=${value}`; });
       const { data } = await HttpService.get(REPORTS_PATH.GET_BY_FILTERS, query);
-      const results: ReportDetails[] = _.map(data, (report) =>
-        new ReportDetails(
-          report.id,
-          report.message,
-          report.status,
-          report.type,
-          report.reporterId,
-          report.reporterName,
-          report.reportedEntityId,
-          report.reportedEntityTitle,
-          report.processorId,
-          report.processorName,
-          report.processorNote,
-          report.assignedAt,
-          report.processedAt,
-          report.archivedAt,
-          report.createdAt,
-          report.lastModifiedAt,
-        ));
-      return Promise.resolve(results);
+      const results: ReportDetails[] = _.map(data, (report) => new ReportDetails(report));
+      return Promise.resolve(_.orderBy(results, ['status', 'createdAt'], ['desc', 'desc']));
     } catch (err) {
       return Promise.reject();
     }

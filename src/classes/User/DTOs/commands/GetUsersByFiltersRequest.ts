@@ -17,33 +17,35 @@ class GetUsersByFiltersRequest {
   public offset: number;
 
   public constructor(
-    searchTerm: string,
-    createdAtFrom: Date,
-    createdAtTill: Date,
-    lastModifiedAtFrom: Date,
-    lastModifiedAtTill: Date,
-    hasImage: boolean,
-    hasEmail: boolean,
-    state: UserState,
-    role: UserRole,
-    creatorId: string,
-    updaterId: string,
-    limit: number,
-    offset: number,
+    _props: {
+      searchTerm: string,
+      createdAtFrom: Date,
+      createdAtTill: Date,
+      lastModifiedAtFrom: Date,
+      lastModifiedAtTill: Date,
+      hasImage: boolean,
+      hasEmail: boolean,
+      state: UserState,
+      role: UserRole,
+      creatorId: string,
+      updaterId: string,
+      limit: number,
+      offset: number,
+    },
   ) {
-    this.searchTerm = searchTerm;
-    this.createdAtFrom = createdAtFrom;
-    this.createdAtTill = createdAtTill;
-    this.lastModifiedAtFrom = lastModifiedAtFrom;
-    this.lastModifiedAtTill = lastModifiedAtTill;
-    this.hasImage = hasImage;
-    this.hasEmail = hasEmail;
-    this.state = state;
-    this.role = role;
-    this.creatorId = creatorId;
-    this.updaterId = updaterId;
-    this.limit = limit;
-    this.offset = offset;
+    this.searchTerm = _props.searchTerm;
+    this.createdAtFrom = _props.createdAtFrom;
+    this.createdAtTill = _props.createdAtTill;
+    this.lastModifiedAtFrom = _props.lastModifiedAtFrom;
+    this.lastModifiedAtTill = _props.lastModifiedAtTill;
+    this.hasImage = _props.hasImage;
+    this.hasEmail = _props.hasEmail;
+    this.state = _props.state;
+    this.role = _props.role;
+    this.creatorId = _props.creatorId;
+    this.updaterId = _props.updaterId;
+    this.limit = _props.limit;
+    this.offset = _props.offset;
   }
 }
 

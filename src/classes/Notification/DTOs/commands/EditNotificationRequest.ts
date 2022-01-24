@@ -1,7 +1,6 @@
 import { NotificationType } from '../../Types/NotificationType';
 
 class EditNotificationRequest {
-
   public id: string;
   public type: NotificationType;
   public title: string;
@@ -17,19 +16,18 @@ class EditNotificationRequest {
     message: string,
     route: string,
     scheduledOn: Date,
-    recipients: string[]
+    recipients: string[],
   ) {
     this.id = id;
     this.type = type;
     this.title = title;
-    this.message = message;
-    this.route = route;
+    this.message = message || '';
+    this.route = route || '';
     this.scheduledOn = scheduledOn;
     this.recipients = recipients;
   }
-
 }
 
 export {
-  EditNotificationRequest
-}
+  EditNotificationRequest,
+};

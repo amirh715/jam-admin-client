@@ -26,8 +26,8 @@
           <base-multi-select-input
             label="سبک ها"
             v-model="genres"
-            :selectionLimit="2"
             :options="genreOptions"
+            :selectionLimit="2"
             optionLabel="title"
           />
         </div>
@@ -77,9 +77,9 @@
         <div>
           <base-textarea
             label="علامت گذاری"
-            v-model="flag"
-            @change="v$.flag.$touch"
-            :errors="v$.flag.$errors"
+            v-model="flagNote"
+            @change="v$.flagNote.$touch"
+            :errors="v$.flagNote.$errors"
           />
         </div>
       </div>
@@ -99,15 +99,13 @@ import { defineComponent } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { helpers } from '@vuelidate/validators';
 import { library } from '@/validators';
-import BaseInputText from '../common/BaseInputText.vue';
-import BaseMultiSelectInput from '../common/BaseMultiSelectInput.vue';
 import { LibraryService } from '@/services/LibraryService';
 import { GenreDetails } from '@/classes/Library/DTOs/queries/GenreDetails';
 import { EditArtistRequest } from '@/classes/Library/DTOs/commands/EditArtistRequest';
 import { ArtistDetails } from '@/classes/Library/DTOs/queries/ArtistDetails';
+import { GenreIdAndTitle } from '@/classes/Library/DTOs/queries/GenreIdAndTitle';
 
 export default defineComponent({
-  components: { BaseInputText, BaseMultiSelectInput },
   setup() {
     return { v$: useVuelidate() };
   },
@@ -123,10 +121,10 @@ export default defineComponent({
       instagramId,
     } = library;
     return {
-      title: { title: helpers.withMessage(() => '', title) },
+      title: { title: helpers.withMessage(() => 'عنوان هنرمند باید بین یک تا ۸۰ کاراکتر باشد.', title) },
       tags: { tags: helpers.withMessage(() => '', tagList) },
       description: { description: helpers.withMessage(() => '', description) },
-      flag: { flag: helpers.withMessage(() => '', flag) },
+      flagNote: { flag: helpers.withMessage(() => '', flag) },
       instagramId: { instagramId: helpers.withMessage(() => '', instagramId) },
     };
   },
@@ -138,7 +136,7 @@ export default defineComponent({
       description: (this.artist as ArtistDetails).description,
       genreOptions: [],
       image: null,
-      flag: (this.artist as ArtistDetails).flag,
+      flagNote: (this.artist as ArtistDetails).flagNote,
       instagramId: (this.artist as ArtistDetails).instagramId,
       removeImage: false,
       genrePlaceholderText: 'منتظر باشید...',
@@ -153,7 +151,7 @@ export default defineComponent({
         this.description,
         this.tags,
         this.genres,
-        this.flag,
+        this.flagNote,
         this.instagramId,
         this.removeImage,
         this.image,
@@ -181,9 +179,9 @@ export default defineComponent({
   },
   mounted() {
     this.genresInputDisabled = true;
-    LibraryService.fetchGenres()
+    LibraryService.fetchAndFlattenGenres()
       .then((genreDetails: GenreDetails[]) => {
-        this.genreOptions = genreDetails;
+        this.genreOptions = genreDetails.map((genre) => new GenreIdAndTitle(genre.id, genre.title));
         this.genresInputDisabled = false;
         this.genrePlaceholderText = 'سبک های هنرمند را انتخاب کنید.';
       })

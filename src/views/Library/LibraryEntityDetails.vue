@@ -6,7 +6,7 @@
     <album-details :album="entityDetails" />
   </div>
   <div v-else-if="entityType === 'Track'">
-    <track-details :track="entityDetails" />
+    <track-details :track="entityDetails" @change="changed" />
   </div>
   <div v-else dir="ltr">
     <h1>There was a problem :(</h1>
@@ -56,10 +56,24 @@ export default defineComponent({
   methods: {
     setData(entityDetails: LibraryEntityDetails) {
       this.entityDetails = entityDetails;
+      console.log(this.entityDetails);
+    },
+    changed() {
+      const entityId = this.entityDetails.id;
+      LibraryService.getById(entityId)
+        .then((refetched) => {
+          this.entityDetails = refetched;
+        }).catch((err) => {
+          this.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 4000,
+          });
+        });
     },
   },
   beforeRouteEnter(to, from, next) {
-    const entityId = to.params.id as string;
+    const entityId = to.query.id as string;
     LibraryService.getById(entityId)
       .then((entityDetails) => {
         next((vm) => {
@@ -77,8 +91,7 @@ export default defineComponent({
       });
   },
   beforeRouteUpdate(to, from, next) {
-    const entityId = to.params.id as string;
-    this.entityDetails = null;
+    const entityId = to.query.id as string;
     LibraryService.getById(entityId)
       .then((entityDetails) => {
         this.setData(entityDetails);

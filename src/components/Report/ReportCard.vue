@@ -21,7 +21,7 @@
             </div>
             <div class="space-v">
               <b class="space-h">تاریخ و زمان گزارش:</b>
-              <span>{{report.createdAt}}</span>
+              <date-time-displayer :datetime="report.createdAt" />
             </div>
           </div>
         </div>
@@ -83,11 +83,11 @@
           <div class="flex justify-content-around">
             <div>
               <b class="space-h">پردازش کننده:</b>
-              <span>{{report.processorName}}</span>
+              <span>{{report.processorName || 'نامشخص'}}</span>
             </div>
             <div v-if="report.status == 'PROCESSED'">
               <b class="space-h">تاریخ و زمان پردازش:</b>
-              <span>{{report.processedAt}}</span>
+              <date-time-displayer :datetime="report.processedAt" />
             </div>
           </div>
         </div>

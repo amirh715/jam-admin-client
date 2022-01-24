@@ -4,13 +4,14 @@ import { USER_PATHS } from './USER_PATHS';
 import { CreateNewUserRequest } from '../../classes/User/DTOs/commands/CreateNewUserRequest';
 import { GetUsersByFiltersRequest } from '../../classes/User/DTOs/commands/GetUsersByFiltersRequest';
 import { GetUserByIdRequest } from '../../classes/User/DTOs/commands/GetUserByIdRequest';
-import { GetLoginAuditsOfUserRequest } from '../../classes/User/DTOs/commands/GetLoginAuditsOfUserRequest';
+import { GetAllLoginAuditsRequest } from '../../classes/User/DTOs/commands/GetAllLoginAuditsRequest';
 import { EditUserProfileRequest } from '../../classes/User/DTOs/commands/EditUserProfileRequest';
 import { ChangePasswordRequest } from '../../classes/User/DTOs/commands/ChangePasswordRequest';
 import { RemoveUserRequest } from '../../classes/User/DTOs/commands/RemoveUserRequest';
 import { UserDetails } from '../../classes/User/DTOs/queries/UserDetails';
 import { LoginDetails } from '../../classes/User/DTOs/queries/LoginDetails';
 import { UserState } from '@/classes/User/Types/UserState';
+import { UserRole } from '@/classes/User/Types/UserRole';
 
 class UserService {
   public static async createNewUser(dto: CreateNewUserRequest): Promise<void> {
@@ -26,10 +27,10 @@ class UserService {
         form.append('role', dto.role.toString());
       }
       if (dto.image) {
-        form.append('image', dto.image);
+        form.append('profileImage', dto.image);
       }
-      const { data } = await HttpService.post(USER_PATHS.CREATE_NEW_USER, form);
-      return data;
+      await HttpService.post(USER_PATHS.CREATE_NEW_USER, form);
+      return Promise.resolve();
     } catch (err) {
       if (err.response.data) {
         return Promise.reject(err.response.data);
@@ -45,11 +46,8 @@ class UserService {
       if (dto.name) {
         form.append('name', dto.name);
       }
-      if (dto.email) {
+      if (dto.email || dto.email.length === 0) {
         form.append('email', dto.email);
-      }
-      if (dto.removeEmail) {
-        form.append('removeEmail', _.toString(dto.removeEmail));
       }
       if (dto.profileImage) {
         form.append('profileImage', dto.profileImage);
@@ -63,7 +61,7 @@ class UserService {
       if (err.response.data) {
         return Promise.reject(err.response.data);
       }
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -75,7 +73,7 @@ class UserService {
         query += `${key}=${value}&`;
       });
       const { data } = await HttpService.get(USER_PATHS.GET_USERS_BY_FILTERS, query);
-      return data;
+      return _.orderBy(data, ['createdAt', 'state'], ['desc']);
     } catch (err) {
       if (err.response.data) {
         return Promise.reject(err.response.data);
@@ -106,22 +104,26 @@ class UserService {
     }
   }
 
-  public static async getLoginAuditsOfUser(userId: string):
+  public static async getLoginAuditsOfUser(userId: string, limit: number, offset: number):
   Promise<LoginDetails[]> {
     try {
-      console.log(userId);
-      const { data } = await HttpService.get(USER_PATHS.GET_LOGIN_AUDITS, '');
-      return data;
+      const query = `?limit=${limit || 30}&offset=${offset || 0}`;
+      const { data } = await HttpService.get(`${USER_PATHS.GET_LOGIN_AUDITS}/${userId}`, query);
+      return _.orderBy(data, ['attemptedAt'], ['desc']);
     } catch (err) {
       return Promise.reject(err);
     }
   }
 
-  public static async getAllLogins(dto: GetLoginAuditsOfUserRequest): Promise<LoginDetails[]> {
+  public static async getAllLogins(dto: GetAllLoginAuditsRequest): Promise<LoginDetails[]> {
     try {
-      const { data } = await HttpService.get(USER_PATHS.GET_ALL_LOGINS, '');
-      return data;
+      const query = `?limit=${dto.limit || 30}&offset=${dto.offset || 0}`;
+      const { data } = await HttpService.get(USER_PATHS.GET_ALL_LOGINS, query);
+      return _.orderBy(data, ['attemptedAt'], ['desc']);
     } catch (err) {
+      if (err.response.data) {
+        return Promise.reject(err.response.data);
+      }
       return Promise.reject(err);
     }
   }
@@ -164,6 +166,21 @@ class UserService {
       form.append('id', dto.id);
       form.append('newPassword', dto.newPassword);
       await HttpService.put(USER_PATHS.CHANGE_PASSWORD, form);
+      return Promise.resolve();
+    } catch (err) {
+      if (err.response.data) {
+        return Promise.reject(err.response.data);
+      }
+      return Promise.reject(err);
+    }
+  }
+
+  public static async changeRole(userId: string, newRole: UserRole): Promise<void> {
+    try {
+      const form = new FormData();
+      form.append('id', userId);
+      form.append('role', newRole);
+      await HttpService.put(USER_PATHS.EDIT_USER, form);
       return Promise.resolve();
     } catch (err) {
       if (err.response.data) {

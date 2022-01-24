@@ -8,10 +8,12 @@
         :items="items"
         :loading="loading"
         @rowSelected="rowSelected"
+        @loadMore="loadMore"
+        @loginAuditRequested="fetchUsersLoginAudit"
       />
     </div>
   </div>
-  <Dialog v-model:visible="detailsDialogVisible" style="width: 45rem">
+  <Dialog v-model:visible="detailsDialogVisible" style="width: 50rem">
     <user-details :user="selectedUser" @userRemoved="userRemoved" @userChanged="userChanged" />
   </Dialog>
 </template>
@@ -39,6 +41,8 @@ export default defineComponent({
       waitingTimer: null,
       detailsDialogVisible: false,
       selectedUser: null,
+      limit: 30,
+      offset: 0,
     };
   },
   methods: {
@@ -99,6 +103,11 @@ export default defineComponent({
           this.loading = false;
         });
     },
+    loadMore() {
+      console.log('loadMore', this.offset);
+      this.offset += this.limit;
+      this.fetchUsers();
+    },
     filtersChanged(filters: GetUsersByFiltersRequest) {
       if (this.waiting) {
         clearTimeout(this.waitingTimer);
@@ -107,12 +116,15 @@ export default defineComponent({
       }
       this.waitingTimer = setTimeout(() => {
         this.waiting = false;
+        filters.limit = this.limit;
+        filters.offset = this.offset;
         this.filters = filters;
         this.fetchUsers();
       }, 1000);
     },
   },
   beforeRouteEnter(to, from, next) {
+    console.log('before route enter');
     UserService.getUsersByFilters(null)
       .then((users) => {
         next((vm) => {

@@ -11,30 +11,30 @@
             :errors="v$.userName.$errors"
           />
         </div>
-        <div class="flex">
+        <div class="flex flex-column">
           <base-input-text
             label="ایمیل"
             v-model="email"
+            :disabled="removeEmail"
             @change="v$.email.$touch"
             :errors="v$.email.$errors"
           />
-          <Button class="p-button-sm p-button-link" @click="removeEmail=true">
-            <vue-feather type="trash-2"></vue-feather>
-          </Button>
         </div>
       </div>
       <div class="col">
         <base-image-input
           label="عکس پروفایل"
           v-model="profileImage"
+          :disabled="removeProfileImage"
           :editable="true"
           :stencilProps="{aspectRatio: 1/1}"
           @cropped="imageCropped"
         />
         <div class="flex justify-content-center space">
-          <Button class="p-button-sm p-button-link" @click="removeProfileImage=true">
-            <vue-feather type="trash-2"></vue-feather>
-          </Button>
+          <span class="space-h">حذف عکس پروفایل</span>
+          <InputSwitch
+            v-model="removeProfileImage"
+          />
         </div>
       </div>
     </div>
@@ -76,9 +76,8 @@ export default defineComponent({
   },
   data() {
     return {
-      userName: null,
-      email: null,
-      removeEmail: false,
+      userName: this.user['name'],
+      email: this.user['email'] || '',
       role: null,
       profileImage: null,
       removeProfileImage: false,
@@ -90,7 +89,7 @@ export default defineComponent({
         this.user.id,
         this.userName,
         this.email,
-        this.removeEmail,
+        null,
         this.role,
         this.profileImage,
         this.removeProfileImage,

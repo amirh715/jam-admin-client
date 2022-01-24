@@ -12,7 +12,7 @@
             <div class="space-v flex">
               <vue-feather type="smartphone"></vue-feather>
               <b class="space-h">موبایل:</b>
-              <span>{{user.mobile}}</span>
+              <number-displayer :value="user.mobile" />
             </div>
             <div class="space-v flex">
               <vue-feather type="hexagon"></vue-feather>
@@ -23,6 +23,10 @@
               <vue-feather type="at-sign"></vue-feather>
               <b class="space-h">ایمیل:</b>
               <span>{{user.email || '( ایمیل ندارد )'}}</span>
+              <Tag v-if="user.email"
+                :severity="user.isEmailVerified ? 'success' : 'warning'" class="space-h" >
+                  {{user.isEmailVerified ? 'تایید شده' : 'تایید نشده'}}
+              </Tag>
             </div>
             <div class="space-v flex">
               <vue-feather type="user"></vue-feather>
@@ -42,12 +46,26 @@
             <div class="space-v flex">
               <vue-feather type="clock"></vue-feather>
               <b class="space-h">تاریخ و زمان ایجاد:</b>
-              <span>{{user.createdAt}}</span>
+              <date-time-displayer :datetime="user.createdAt" />
             </div>
             <div class="space-v flex">
               <vue-feather type="clock"></vue-feather>
               <b class="space-h">آخرین بروزرسانی:</b>
-              <span>{{user.lastModifiedAt}}</span>
+              <date-time-displayer :datetime="user.lastModifiedAt" />
+            </div>
+            <div class="space-v flex">
+              <Button @click="fetchUserLoginAudit" :disabled="loginAuditLoading"
+                class="p-button-sm p-button-link">
+                  <div v-if="loginAuditLoading" class="flex">
+                    <vue-feather type="loader"
+                      animation="spin" animation-speed="slow"></vue-feather>
+                      <span class="space-h">منتظر باشید</span>
+                  </div>
+                  <div v-else class="flex">
+                    <vue-feather type="list"></vue-feather>
+                    <span class="space-h">مشاهده سوابق ورود</span>
+                  </div>
+              </Button>
             </div>
           </div>
         </div>
@@ -66,22 +84,22 @@
             <div class="space-v flex">
               <vue-feather type="file"></vue-feather>
               <b class="space-h">تعداد گزارش ها:</b>
-              <span>{{user.totalReportsCount}}</span>
+              <number-displayer :value="user.totalReportsCount" />
             </div>
             <div class="space-v flex">
               <vue-feather type="log-in"></vue-feather>
               <b class="space-h">تعداد ورود:</b>
-              <span>{{user.totalLoginCount}}</span>
+              <number-displayer :value="user.totalLoginCount" />
             </div>
             <div class="space-v flex">
               <vue-feather type="inbox"></vue-feather>
               <b class="space-h">تعداد نوتیفیکیشن ها:</b>
-              <span>{{user.totalNotificationsCount}}</span>
+              <number-displayer :value="user.totalNotificationsCount" />
             </div>
             <div class="space-v flex">
               <vue-feather type="play"></vue-feather>
               <b class="space-h">تعداد کل آهنگ های گوش داده شده:</b>
-              <span>{{user.totalPlayedTracksCount}}</span>
+              <number-displayer :value="user.totalPlayedTracksCount" />
             </div>
           </div>
         </div>
@@ -92,9 +110,16 @@
         <vue-feather type="edit"></vue-feather>
         <span class="space-h">تغییر پروفایل</span>
       </Button>
-      <Button @click="changePasswordDialogVisible=true" class="p-button-sm p-button-outlined">
-        <vue-feather type="key"></vue-feather>
-        <span class="space-h">تغییر رمز</span>
+      <Button
+        @dblclick="changePasswordDialogVisible=true"
+        class="p-button-sm p-button-danger p-button-outlined">
+          <vue-feather type="key"></vue-feather>
+          <span class="space-h">تغییر رمز</span>
+      </Button>
+      <Button @dblclick="changeRoleDialogVisible=true"
+        class="p-button-sm p-button-danger p-button-outlined">
+          <vue-feather type="lock"></vue-feather>
+          <span class="space-h">ارتقا/تنزل نقش</span>
       </Button>
       <Button @dblclick="deleteUser" class="p-button-sm p-button-danger p-button-outlined">
         <vue-feather type="trash-2"></vue-feather>
@@ -114,6 +139,30 @@
   </div>
   <Dialog v-model:visible="changePasswordDialogVisible">
     <change-password-form :user="user" />
+  </Dialog>
+  <Dialog v-model:visible="changeRoleDialogVisible" style="width: 25rem;">
+    <h3 class="text-center">ارتقا/تنزل نقش</h3>
+    <div><hr/></div>
+    <base-multi-select-input
+      label="نقش جدید"
+      v-model="newRole"
+      :options="roleOptions"
+      :selectionLimit="1"
+      optionLabel="displayValue"
+      note="برای اعمال تغییرات کاربر باید یکبار از اکانت خود خارج و به آن وارد شود."
+    />
+    <div class="space-4-v flex justify-content-center">
+      <Button @click="changeRole" :disabled="!newRole" class="p-button-sm">
+        <vue-feather type="check"></vue-feather>
+        <span class="space-h">ذخیره</span>
+      </Button>
+    </div>
+  </Dialog>
+  <Dialog v-model:visible="usersLoginAuditDialogVisible"
+    @hide="usersLoginAuditDialogClosed" style="width: 85rem;">
+      <h3 class="text-center">سوابق ورود</h3>
+      <div><hr/></div>
+      <login-audit-table :items="usersLoginAudit" @loadMore="fetchUserLoginAudit" />
   </Dialog>
 </template>
 
@@ -137,6 +186,8 @@ import EditUserForm from '@/components/User/EditUserForm.vue';
 import ChangePasswordForm from '@/components/User/ChangePasswordForm.vue';
 import { UserService } from '@/services/UserService';
 import { RemoveUserRequest } from '@/classes/User/DTOs/commands/RemoveUserRequest';
+import LoginAuditTable from '@/components/User/LoginAuditTable.vue';
+import { UserRole } from '@/classes/User/Types/UserRole';
 
 export default defineComponent({
   name: 'user-details',
@@ -146,6 +197,7 @@ export default defineComponent({
     UserRoleTag,
     EditUserForm,
     ChangePasswordForm,
+    LoginAuditTable,
   },
   props: {
     user: {
@@ -158,6 +210,25 @@ export default defineComponent({
       profileImageSrc: null,
       loadingProfileImage: true,
       changePasswordDialogVisible: false,
+      changeRoleDialogVisible: false,
+      usersLoginAuditDialogVisible: false,
+      loginAuditLoading: false,
+      loginAuditParams: {
+        limit: 30,
+        offset: 0,
+      },
+      usersLoginAudit: [],
+      newRole: null,
+      roleOptions: [
+        {
+          value: UserRole.LIBRARY_MANAGER,
+          displayValue: 'مدیر مجموعه',
+        },
+        {
+          value: UserRole.SUBSCRIBER,
+          displayValue: 'مشترک',
+        },
+      ],
     };
   },
   computed: {
@@ -166,8 +237,23 @@ export default defineComponent({
     },
   },
   methods: {
-    changePassword() {
-      console.log();
+    changeRole() {
+      UserService.changeRole(this.user.id, this.newRole[0].value)
+        .then(() => {
+          this.$router.go();
+          this.$toast.add({
+            severity: 'success',
+            detail: 'نقش کاربر با موفقیت تغییر یافت.',
+            life: 4000,
+          });
+        })
+        .catch((err) => {
+          this.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 4000,
+          });
+        });
     },
     deleteUser() {
       this.$confirm.require({
@@ -227,6 +313,34 @@ export default defineComponent({
         rejectLabel: 'بیخیال',
         defaultFocus: 'reject',
       });
+    },
+    fetchUserLoginAudit() {
+      this.loginAuditLoading = true;
+      UserService.getLoginAuditsOfUser(
+        this.user.id,
+        this.loginAuditParams.limit,
+        this.loginAuditParams.offset,
+      ).then((items) => {
+        this.usersLoginAuditDialogVisible = true;
+        this.usersLoginAudit = items;
+        this.loginAuditParams.offset += this.loginAuditParams.limit;
+      })
+        .catch((err) => {
+          this.$toast.add({
+            severity: 'error',
+            detail: err.message,
+            life: 4000,
+          });
+        })
+        .finally(() => {
+          this.loginAuditLoading = false;
+        });
+    },
+    usersLoginAuditDialogClosed() {
+      this.loginAuditParams = {
+        limit: 30,
+        offset: 0,
+      };
     },
   },
   created() {

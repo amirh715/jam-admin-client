@@ -12,6 +12,7 @@ class TrackDetails extends ArtworkDetails {
   public constructor(
     _props: {
       id: string,
+      type: string,
       title: string,
       description: string,
       published: boolean,
@@ -19,9 +20,9 @@ class TrackDetails extends ArtworkDetails {
       genres: GenreIdAndTitle[],
       monthlyPlayedCount: string,
       rate: string,
-      flag: string,
+      flagNote: string,
       totalPlayedCount: string,
-      duration: string,
+      duration: number,
       audioSize: string,
       format: string,
       lyrics: string,
@@ -31,6 +32,12 @@ class TrackDetails extends ArtworkDetails {
       producer: string,
       releaseDate: Date,
       imageSrc: string,
+      createdAt: string,
+      lastModifiedAt: string,
+      creatorId: string,
+      creatorName: string,
+      updaterId: string,
+      updaterName: string,
     },
   ) {
     super(

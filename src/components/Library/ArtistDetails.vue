@@ -11,9 +11,16 @@
           </div>
           <div class="col-9">
             <base-library-entity-details :entity="artist" />
-            <div class="flex space-2-v">
-              <vue-feather type="instagram"></vue-feather>
-              <span class="space-h">{{artist.instagramId || 'اینستاگرام ندارد'}}</span>
+            <div class="flex space-v">
+              <Button v-if="artist.instagramId" @click="goToInstagramPage"
+                class="p-button-sm p-button-outlined">
+                  <vue-feather type="instagram"></vue-feather>
+                  <span class="space-h" style="direction: ltr">@{{artist.instagramId}}</span>
+              </Button>
+              <div v-else class="flex">
+                <vue-feather type="instagram"></vue-feather>
+                <span class="space-h">اینستاگرام ندارد</span>
+              </div>
             </div>
             <div class="flex space-2-v">
               <library-sensitive-options-card
@@ -76,6 +83,7 @@ import { LibraryService } from '@/services/LibraryService';
 import { GetLibraryEntitiesByFiltersRequest } from '@/classes/Library/DTOs/commands/GetLibraryEntitiesByFiltersRequest';
 import { TrackDetails } from '@/classes/Library/DTOs/queries/TrackDetails';
 import EditArtist from '@/components/Library/EditArtist.vue';
+import { AlbumDetails } from '@/classes/Library/DTOs/queries/AlbumDetails';
 
 export default defineComponent({
   name: 'artist-details',
@@ -102,9 +110,12 @@ export default defineComponent({
       const artworksFilter = new GetLibraryEntitiesByFiltersRequest();
       artworksFilter.artistId = this.artist.id;
       LibraryService.getByFilters(artworksFilter)
-        .then((entityDetails: TrackDetails[]) => {
-          this.singles = _.filter(entityDetails, (tracks) => !_.isNil(tracks.album));
-          this.albums = _.filter(entityDetails, (tracks) => _.isNil(tracks.album));
+        .then((entityDetails: TrackDetails[] | AlbumDetails[]) => {
+          console.log(entityDetails);
+          this.singles = _.filter(entityDetails, (track) =>
+            track instanceof TrackDetails && !track.isAlbumTrack());
+          this.albums = _.filter(entityDetails, (album) =>
+            album instanceof AlbumDetails);
           this.loadArtworksImages();
         })
         .catch((err) => {
@@ -136,6 +147,9 @@ export default defineComponent({
         console.log(err);
       }
     },
+    goToInstagramPage() {
+      window.open(`https://instagram.com/${this.artist.instagramId}`);
+    },
     newAlbum() {
       this.$router.push({ name: 'NewAlbum', query: { artistId: this.artist.id, artistTitle: this.artist.title } });
     },
@@ -163,6 +177,7 @@ export default defineComponent({
     publish(cascadeArtistPublishCommandToArtworks: boolean) {
       LibraryService.publish(this.artist.id, cascadeArtistPublishCommandToArtworks)
         .then(() => {
+          this.$router.push({ name: 'LibraryListing' });
           this.$toast.add({
             severity: 'success',
             detail: 'هنرمند با موفقیت منتشر شد.',
@@ -180,6 +195,7 @@ export default defineComponent({
     archive() {
       LibraryService.archive(this.artist.id)
         .then(() => {
+          this.$router.go();
           this.$toast.add({
             severity: 'success',
             detail: 'هنرمند با موفقیت آرشیو شد.',

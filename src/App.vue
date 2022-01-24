@@ -3,13 +3,36 @@
     <div>
       <navbar></navbar>
     </div>
-    <div class="flex align-items-start" id="main">
+    <div class="flex justify-content-center align-items-start" id="main">
       <div id="panel-menu" style="position: relative">
         <side-menu></side-menu>
         <app-offline-notice />
+        <transition name="slide-fade" class="space-v">
+          <player
+            v-if="!$store.state.player.isStopped"
+            :trackId="$store.state.player.currentTrack.id"
+            :trackTitle="$store.state.player.currentTrack.title"
+            :currentDuration="$store.state.player.currentDuration"
+            :totalDuration="$store.state.player.totalDuration"
+            :playing="$store.state.player.isPlaying"
+            :shuffleOn="$store.state.player.shuffleOn"
+            :repeatOn="$store.state.player.repeatOn"
+            :skipForwardDisabled="$store.state.player.playQueue.length ===
+              $store.state.player.playQueueIndex + 1"
+            @play="$store.state.player.isStopped ?
+              $store.dispatch('PLAY', { track }) :
+              $store.dispatch('RESUME')"
+            @pause="$store.dispatch('PAUSE')"
+            @seek="test"
+            @skipForward="$store.dispatch('SKIP_FORWARD')"
+            @skipBack="$store.dispatch('SKIP_BACK')"
+            @shuffle="$store.dispatch('SHUFFLE')"
+            @repeat="$store.dispatch('REPEAT')"
+          />
+        </transition>
       </div>
       <div id="router-view">
-        <router-view/>
+        <router-view />
       </div>
     </div>
   </div>
@@ -27,17 +50,18 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+
   #main {
     #panel-menu {
       width: 19%;
-      height: 100%;
       margin: 0.5rem 0;
     }
     #router-view {
       width: 80%;
-      height: 100%;
+      // height: 200px;
       margin: 0.5rem;
-      overflow-y: auto;
+      max-height: 900px;
+      overflow-y: scroll;
     }
   }
 }
@@ -58,19 +82,23 @@
 <script lang="ts">
 import SideMenu from './components/core/AppSideBar.vue';
 import Navbar from './components/core/AppNavbar.vue';
-import { AuthService } from './services/AuthService';
 
 export default {
   components: { SideMenu, Navbar },
   data(): any {
     return {};
   },
-  watch: {
-    // '$route'(to : any, from : any) {
-    //   const toDepth = to.path.split('/').length;
-    //   const fromDepth = from.path.split('/').length;
-    //   this.transition = toDepth < fromDepth ? 'slide-right' : 'slide-left';
-    // },
+  methods: {
+    test(seekPosition: number) {
+      this.$store.dispatch('SEEK', seekPosition);
+    },
   },
+  // watch: {
+  //   '$route'(to, from) {
+  //     const toDepth = to.path.split('/').length;
+  //     const fromDepth = from.path.split('/').length;
+  //     this.transition = toDepth < fromDepth ? 'slide-right' : 'slide-left';
+  //   },
+  // },
 };
 </script>

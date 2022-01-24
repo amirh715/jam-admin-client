@@ -1,10 +1,12 @@
+import { GenreDetails } from '../queries/GenreDetails';
+
 class GetLibraryEntitiesByFiltersRequest {
   public type: string;
   public searchTerm: string;
   public published: boolean;
   public isFlagged: boolean;
   public hasImage: boolean;
-  public genreIds: string[];
+  public genreIds: string;
   public rateFrom: number;
   public rateTo: number;
   public totalPlayedCountFrom: number;
@@ -20,6 +22,8 @@ class GetLibraryEntitiesByFiltersRequest {
   public createdAtTill: Date;
   public lastModifiedAtFrom: Date;
   public lastModifiedAtTill: Date;
+  public limit: number;
+  public offset: number;
 
   public constructor(
     type?: string,
@@ -27,7 +31,7 @@ class GetLibraryEntitiesByFiltersRequest {
     published?: boolean,
     isFlagged?: boolean,
     hasImage?: boolean,
-    genreIds?: string[],
+    genres?: GenreDetails[],
     rateFrom?: number,
     rateTo?: number,
     totalPlayedCountFrom?: number,
@@ -43,13 +47,17 @@ class GetLibraryEntitiesByFiltersRequest {
     createdAtTill?: Date,
     lastModifiedAtFrom?: Date,
     lastModifiedAtTill?: Date,
+    limit?: number,
+    offset?: number,
   ) {
     this.type = type;
-    this.searchTerm = searchTerm;
+    this.searchTerm = (searchTerm && searchTerm.length > 0 && searchTerm) || null;
     this.published = published;
     this.isFlagged = isFlagged;
     this.hasImage = hasImage;
-    this.genreIds = genreIds;
+    this.genreIds = genres && genres.length > 0
+      ? JSON.stringify(genres.map((genre) => genre.id))
+      : null;
     this.rateFrom = rateFrom;
     this.rateTo = rateTo;
     this.totalPlayedCountFrom = totalPlayedCountFrom;
@@ -65,6 +73,8 @@ class GetLibraryEntitiesByFiltersRequest {
     this.createdAtTill = createdAtTill;
     this.lastModifiedAtFrom = lastModifiedAtFrom;
     this.lastModifiedAtTill = lastModifiedAtTill;
+    this.limit = limit;
+    this.offset = offset;
   }
 }
 

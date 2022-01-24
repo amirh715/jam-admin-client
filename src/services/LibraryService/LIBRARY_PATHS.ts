@@ -15,6 +15,7 @@ enum LIBRARY_PATHS {
   PUBLISH_ARCHIVE_ENTITY = '/library/publish-or-archive',
   REMOVE_ENTITY = '/library/',
   GET_TRACK_AUDIO = '/library/audio',
+  TRACK_PLAYED = '/library/played-track',
 }
 
 export { LIBRARY_PATHS };
