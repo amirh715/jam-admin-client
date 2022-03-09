@@ -32,9 +32,6 @@ class UserService {
       await HttpService.post(USER_PATHS.CREATE_NEW_USER, form);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -58,9 +55,6 @@ class UserService {
       await HttpService.put(USER_PATHS.EDIT_USER, form);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -75,9 +69,6 @@ class UserService {
       const { data } = await HttpService.get(USER_PATHS.GET_USERS_BY_FILTERS, query);
       return _.orderBy(data, ['createdAt', 'state'], ['desc']);
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -88,9 +79,6 @@ class UserService {
       const { data } = await HttpService.get(USER_PATHS.GET_USER_BY_ID, `/${dto.id}`);
       return data;
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -121,9 +109,6 @@ class UserService {
       const { data } = await HttpService.get(USER_PATHS.GET_ALL_LOGINS, query);
       return _.orderBy(data, ['attemptedAt'], ['desc']);
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -153,9 +138,6 @@ class UserService {
       await HttpService.put(USER_PATHS.ACTIVATE_BLOCK_USER, form);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -168,9 +150,6 @@ class UserService {
       await HttpService.put(USER_PATHS.CHANGE_PASSWORD, form);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -183,9 +162,6 @@ class UserService {
       await HttpService.put(USER_PATHS.EDIT_USER, form);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -198,9 +174,6 @@ class UserService {
       await HttpService.put(USER_PATHS.ACTIVATE_BLOCK_USER, form);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -212,9 +185,6 @@ class UserService {
       const { data } = await HttpService.delete(USER_PATHS.REMOVE_USER, form);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }

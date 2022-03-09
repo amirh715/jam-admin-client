@@ -184,6 +184,7 @@ export default defineComponent({
             detail: 'آلبوم جدید ایجاد شد.',
             life: 4000,
           });
+          this.$router.push({ name: 'LibraryEntityDetails', query: { id: this.artistId } });
         })
         .catch((err) => {
           this.$toast.add({

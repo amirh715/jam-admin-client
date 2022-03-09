@@ -3,6 +3,7 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
 } from 'axios';
+import * as _ from 'lodash';
 
 const config : AxiosRequestConfig = {
   baseURL: 'http://localhost:4567/api/v1',
@@ -33,7 +34,7 @@ class HttpService {
     try {
       return await http.post(path, data);
     } catch (error) {
-      if (error.response.data) {
+      if (error.response && error.response.data) {
         return Promise.reject(error.response.data);
       }
       return Promise.reject(error);
@@ -44,6 +45,9 @@ class HttpService {
     try {
       return await http.put(path, data);
     } catch (error) {
+      if (error.response && error.response.data) {
+        return Promise.reject(error.response.data);
+      }
       return Promise.reject(error);
     }
   }

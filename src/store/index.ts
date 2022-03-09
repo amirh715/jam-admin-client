@@ -33,8 +33,8 @@ export default createStore({
     },
   },
   actions: {
-    login({ commit }, args: { mobile: string, password: string, fcmToken: string }) {
-      AuthService.login(args.mobile, args.password, args.fcmToken)
+    login({ commit }, args: { mobile: string, password: string }) {
+      AuthService.login(args.mobile, args.password)
         .then((token) => {
           const payload: any = decode(token);
           commit(COMMIT_TYPES.LOGIN, { subject: payload.sub, role: payload.role });

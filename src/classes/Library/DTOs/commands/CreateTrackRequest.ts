@@ -1,3 +1,5 @@
+import { GenreDetails } from '../queries/GenreDetails';
+
 class CreateTrackRequest {
   public title: string;
   public description: string;
@@ -15,7 +17,7 @@ class CreateTrackRequest {
   public constructor(
     title: string,
     description: string,
-    genreIds: string[],
+    genreIds: GenreDetails[],
     tags: string[],
     flag: string,
     recordLabel: string,
@@ -28,7 +30,7 @@ class CreateTrackRequest {
   ) {
     this.title = title;
     this.description = description;
-    this.genreIds = genreIds;
+    this.genreIds = genreIds.map((genre) => genre.id);
     this.tags = tags;
     this.flag = flag;
     this.recordLabel = recordLabel;

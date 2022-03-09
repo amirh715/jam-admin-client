@@ -43,6 +43,11 @@ import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
 
 import Vue3PersianDatetimePicker from 'vue3-persian-datetime-picker';
+
+import { initializeApp, FirebaseOptions } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+// import { AuthService } from './services/AuthService';
+
 import DateTimeDisplayer from './components/common/DateTimeDisplayer.vue';
 import NumberDisplayer from './components/common/NumberDisplayer.vue';
 import BaseInputText from './components/common/BaseInputText.vue';
@@ -73,6 +78,7 @@ import { AudioManager } from './services/AudioManager';
 import { PlayedTrack } from './persistence/PlayedTrack';
 import { Database } from './persistence';
 import { LibraryService } from './services/LibraryService';
+import { AuthService } from './services/AuthService';
 
 const app = createApp(App)
   .use(store)
@@ -136,6 +142,12 @@ app.component('Player', Player);
 
 app.component(VueFeather.name || '', VueFeather);
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker-dev.js')
+    .then(() => console.log('Success'))
+    .catch((err) => console.log(err));
+}
+
 app.mount('#app');
 
 AudioManager.addEventListener('trackPlayed', () => {
@@ -150,12 +162,47 @@ AudioManager.addEventListener('trackPlayed', () => {
 
 AppManager.syncPlayedTracks();
 
+// service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: './' })
+    navigator.serviceWorker.register('./sw.js', { scope: '/' })
       .then((registeration) => console.log('registered', registeration))
       .catch((err) => console.log(err));
   });
+  navigator.serviceWorker.register('firebase-messaging-sw.js', { scope: '/*' })
+    .then(() => {
+      // Firebase Cloud Messaging
+      const fcmConfig: FirebaseOptions = {
+        apiKey: 'AIzaSyC39bXdJAlAjLapfKqL3nrKPNzUXkg95xs',
+        authDomain: 'jamusic-5fd24.firebaseapp.com',
+        projectId: 'jamusic-5fd24',
+        storageBucket: 'jamusic-5fd24.appspot.com',
+        messagingSenderId: '603123320217',
+        appId: '1:603123320217:web:949f1cf984ed253ff53f08',
+        measurementId: 'G-8QJSDQDV4R',
+      };
+      const firebase = initializeApp(fcmConfig);
+      const messaging = getMessaging(firebase);
+      getToken(messaging, { vapidKey: 'BORT7Rl_GFJE-IaNyl8nih6FRmRMQUHijKUpbNy1kIkAm1E4khGtobXs4gPhCZarcpThVsaJ9rtOkQfZymc67g0' })
+        .then(async (currentToken) => {
+          if (currentToken) {
+            await AuthService.updateFCMToken(currentToken);
+          } else {
+            console.log('getToken() : ', 'No registeration token is available.');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      onMessage(messaging, (payload) => {
+        console.log('onMessage(): ', payload);
+        alert('onMessage called');
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
   if (navigator.onLine) store.commit('online');
   window.addEventListener('online', () => store.commit('online'));
   window.addEventListener('offline', () => store.commit('offline'));

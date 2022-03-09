@@ -12,6 +12,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "allowJs": true,
     "types": [
       "webpack-env",
       "jest"
@@ -35,9 +36,10 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "sw.ts"
+    "sw.ts",
+    "firebase-messaging-sw.ts"
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

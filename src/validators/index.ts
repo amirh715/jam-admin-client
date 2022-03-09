@@ -70,8 +70,10 @@ const notificationRoute = (value: string): boolean =>
   !helpers.req(value) || value.length > 0;
 const notificationRecipients = (value: string): boolean =>
   value.length > 0 && value.length < 5000;
-const notificationScheduledOn = (value: Date): boolean =>
-  value > new Date() && value < new Date(new Date().setMinutes(new Date().getHours() + 168));
+const notificationScheduledOn = (v: string): boolean => {
+  const value = new Date(v);
+  return value > new Date() && value < new Date(new Date().setHours(new Date().getHours() + 720));
+};
 
 const notification = {
   title: notificationTitle,

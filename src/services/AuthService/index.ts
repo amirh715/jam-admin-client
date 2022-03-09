@@ -6,6 +6,7 @@ class AuthService {
   private authenticated : boolean;
   private subjectId : string;
   private role : UserRole;
+  private fcmToken: string;
 
   private PATHS = {
     login: '/user/login',
@@ -16,6 +17,7 @@ class AuthService {
     resetPassword: '/user/reset-password',
     requestEmailVerification: '/user/request-email-verification',
     changePassword: '/user/change-password',
+    updateFCMToken: '/user/update-fcm-token',
   };
 
   public constructor() {
@@ -56,14 +58,15 @@ class AuthService {
     return this.getRole() === UserRole.SUBSCRIBER;
   }
 
-  public async login(mobile : string, password : string, fcmToken: string)
+  public async login(mobile : string, password : string)
   : Promise<string> {
     const data = new FormData();
     data.append('mobile', mobile);
     data.append('password', password);
-    if (fcmToken) {
-      data.append('FCMToken', fcmToken);
+    if (this.fcmToken) {
+      data.append('FCMToken', this.fcmToken);
     }
+    console.log('FCMTOkne : ', this.fcmToken);
     try {
       const response = await HttpService.post(this.PATHS.login, data);
       const token: string = response.data.token;
@@ -169,6 +172,18 @@ class AuthService {
         return Promise.reject(error.response.data);
       }
       return Promise.reject(error);
+    }
+  }
+
+  public async updateFCMToken(token: string): Promise<void> {
+    try {
+      this.fcmToken = token;
+      const data = new FormData();
+      data.append('FCMToken', this.fcmToken);
+      HttpService.post(this.PATHS.updateFCMToken, data);
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.reject(err);
     }
   }
 

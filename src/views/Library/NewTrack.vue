@@ -91,12 +91,15 @@
                 note="این یادداشت تنها برای ادمین های سیستم قابل مشاهده است."
               />
             </div>
-            <div>
-              <p>تاریخ انتشار</p>
-              <datetime-picker
+            <div class="space-v">
+              <span class="space-v">تاریخ انتشار</span>
+              <base-datetime-picker
+                v-model="releaseDate"
                 :disabled="isAlbumTrack"
+                type="date"
+                format="YYYY-MM-DDTHH:mm:ss"
               />
-              <label v-if="isAlbumTrack" class="note">
+              <label v-if="isAlbumTrack" style="opacity: 0.5; font-size: 0.8rem">
                 تاریخ انتشار آلبوم برای آهنگ ثبت می شود.</label>
             </div>
           </div>
@@ -115,7 +118,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { helpers } from '@vuelidate/validators';
+import { helpers, required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import { library } from '@/validators';
 import BaseAudioInput from '@/components/common/BaseAudioInput.vue';
@@ -136,7 +139,7 @@ export default defineComponent({
       albumTitle: this.$route.query.albumTitle,
       title: null,
       tags: [],
-      genres: [],
+      genres: [] as string[],
       description: null,
       recordLabel: null,
       producer: null,
@@ -165,6 +168,7 @@ export default defineComponent({
       description: { description: helpers.withMessage(() => 'شرح', description) },
       recordLabel: { recordLabel: helpers.withMessage(() => '', recordLabel) },
       releaseDate: { releaseDate: helpers.withMessage(() => '', releaseDate) },
+      audio: { required },
     };
   },
   methods: {

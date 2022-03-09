@@ -10,7 +10,7 @@
   </div>
   <div v-else dir="ltr">
     <h1>There was a problem :(</h1>
-    <b>Entity type is unknown!</b>
+    <b>Refresh the page</b>
   </div>
 </template>
 

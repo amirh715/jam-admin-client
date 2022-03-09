@@ -23,7 +23,7 @@
               $store.dispatch('PLAY', { track }) :
               $store.dispatch('RESUME')"
             @pause="$store.dispatch('PAUSE')"
-            @seek="test"
+            @seek="seekToPosition"
             @skipForward="$store.dispatch('SKIP_FORWARD')"
             @skipBack="$store.dispatch('SKIP_BACK')"
             @shuffle="$store.dispatch('SHUFFLE')"
@@ -60,7 +60,7 @@
       width: 80%;
       // height: 200px;
       margin: 0.5rem;
-      max-height: 900px;
+      max-height: 93vh;
       overflow-y: scroll;
     }
   }
@@ -89,7 +89,7 @@ export default {
     return {};
   },
   methods: {
-    test(seekPosition: number) {
+    seekToPosition(seekPosition: number) {
       this.$store.dispatch('SEEK', seekPosition);
     },
   },

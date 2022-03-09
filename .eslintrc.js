@@ -30,6 +30,16 @@ module.exports = {
     'prefer-template': 'off',
     'operator-linebreak': 'off',
     'class-methods-use-this': 'off',
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "always",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
   },
   overrides: [
     {

@@ -35,14 +35,12 @@ class NotificationService {
       await HttpService.post(this.PATHS.CREATE_NEW_NOTIFICATION, data);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
-      return Promise.reject(err);
+      return Promise.reject(err.message);
     }
   }
 
   public static async editNotification(dto: EditNotificationRequest): Promise<void> {
+    console.log('Route: ', dto.route);
     try {
       const data = new FormData();
       data.append('id', dto.id);
@@ -53,18 +51,17 @@ class NotificationService {
         data.append('message', dto.message);
       }
       if (dto.route) {
-        data.append('route', dto.route.toString());
+        data.append('route', dto.route);
       }
       if (dto.scheduledOn) {
         data.append('scheduledOn', dto.scheduledOn.toString());
       }
+      if (dto.recipients) {
+        data.append('recipients', JSON.stringify(dto.recipients));
+      }
       await HttpService.put(this.PATHS.EDIT_NOTIFICATION, data);
       return Promise.resolve();
     } catch (err) {
-      console.log(err);
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }

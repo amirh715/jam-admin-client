@@ -32,9 +32,6 @@ class LibraryService {
       await HttpService.post(LIBRARY_PATHS.CREATE_ARTIST, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -89,6 +86,7 @@ class LibraryService {
         payload.append('tags', JSON.stringify(track.tags));
       }
       if (track.genreIds) {
+        console.log(track.genreIds);
         payload.append('genreIds', JSON.stringify(track.genreIds));
       }
       if (track.image) {
@@ -112,10 +110,7 @@ class LibraryService {
       await HttpService.post(LIBRARY_PATHS.CREATE_TRACK, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -148,9 +143,6 @@ class LibraryService {
       const { data } = await HttpService.get(`${LIBRARY_PATHS.GET_IMAGE_BY_ID}/${id}`, '', { responseType: 'blob' });
       return Promise.resolve(new Blob([data]));
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -161,9 +153,6 @@ class LibraryService {
         { responseType: 'arraybuffer', headers: { 'Content-Type': 'audio/mpeg' } });
       return Promise.resolve(new Blob([data], { type: 'audio/mpeg' }));
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject();
     }
   }
@@ -197,9 +186,6 @@ class LibraryService {
       await HttpService.put(LIBRARY_PATHS.EDIT_ARTIST, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject();
     }
   }
@@ -236,12 +222,12 @@ class LibraryService {
       if (!_.isNil(dto.releaseDate)) {
         payload.append('releaseDate', dto.releaseDate);
       }
+      if (!_.isNil(dto.lyrics)) {
+        payload.append('lyrics', dto.lyrics);
+      }
       await HttpService.put(LIBRARY_PATHS.EDIT_ARTWORK, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -261,9 +247,6 @@ class LibraryService {
       await HttpService.put(LIBRARY_PATHS.PUBLISH_ARCHIVE_ENTITY, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -276,10 +259,7 @@ class LibraryService {
       await HttpService.put(LIBRARY_PATHS.PUBLISH_ARCHIVE_ENTITY, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -290,7 +270,7 @@ class LibraryService {
       await HttpService.delete(LIBRARY_PATHS.REMOVE_ENTITY, payload);
       return Promise.resolve();
     } catch (err) {
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -305,9 +285,6 @@ class LibraryService {
       const { data } = await HttpService.post(LIBRARY_PATHS.CREATE_GENRE, payload);
       return Promise.resolve(data);
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
       return Promise.reject(err);
     }
   }
@@ -324,7 +301,7 @@ class LibraryService {
       const { data } = await HttpService.get(LIBRARY_PATHS.GET_GENRE_BY_ID, id);
       return Promise.resolve(new GenreDetails(data));
     } catch (err) {
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -337,10 +314,7 @@ class LibraryService {
       await HttpService.put(LIBRARY_PATHS.EDIT_GENRE, payload);
       return Promise.resolve();
     } catch (err) {
-      if (err.response.data) {
-        return Promise.reject(err.response.data);
-      }
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 

@@ -1,7 +1,12 @@
 <template>
   <div>
     <library-filters-panel @change="filtersChanged" />
-    <library-listing-table :items="items" :loading="loading" @loadMore="loadMoreClicked" />
+    <library-listing-table
+      :items="items"
+      :loading="loading"
+      note="بهتر است فیلتر ها را تغییر دهید."
+      @loadMore="loadMoreClicked"
+    />
   </div>
 </template>
 

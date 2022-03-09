@@ -103,19 +103,25 @@ class AudioManager extends EventTarget {
   }
 
   public skipForward(): void {
+    const playNextTrack = this.isPlaying();
     this.stop();
     if (this.queue.length !== this.currentQueueIndex + 1) {
       this.currentQueueIndex++;
     }
-    this.play();
+    if (playNextTrack) {
+      this.play();
+    }
   }
 
   public skipBack(): void {
+    const playNextTrack = this.isPlaying();
     this.stop();
     if (this.currentQueueIndex !== 0 && this.getCurrentDuration() < 7) {
       this.currentQueueIndex--;
     }
-    this.play();
+    if (playNextTrack) {
+      this.play();
+    }
   }
 
   public mute(): void {

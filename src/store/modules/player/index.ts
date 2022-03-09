@@ -119,10 +119,10 @@ const player: Module<{
     },
     [PLAYER_ACTION_TYPES.RESUME]({ commit }) {
       const currentTrack = AudioManager.getCurrentTrack();
-      const playQueueIndex = AudioManager.getCurrentPlayQueueIndex();
       const currentDuration = AudioManager.getCurrentDuration();
-      const playQueue = AudioManager.getCurrentPlayQueue();
       const totalDuration = AudioManager.getTotalDuration();
+      const playQueueIndex = AudioManager.getCurrentPlayQueueIndex();
+      const playQueue = AudioManager.getCurrentPlayQueue();
       AudioManager.resume();
       commit(PLAYER_COMMIT_TYPES.PLAYING, {
         currentTrack, currentDuration, totalDuration, playQueueIndex, playQueue,

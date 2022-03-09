@@ -13,7 +13,7 @@
       />
     </div>
   </div>
-  <Dialog v-model:visible="detailsDialogVisible" style="width: 50rem">
+  <Dialog v-model:visible="detailsDialogVisible" style="width: 53rem">
     <user-details :user="selectedUser" @userRemoved="userRemoved" @userChanged="userChanged" />
   </Dialog>
 </template>
@@ -87,6 +87,7 @@ export default defineComponent({
     },
     fetchUsers() {
       this.loading = true;
+      this.filters.limit = this.limit;
       UserService.getUsersByFilters(this.filters)
         .then((users) => {
           this.items = users;
@@ -104,8 +105,8 @@ export default defineComponent({
         });
     },
     loadMore() {
-      console.log('loadMore', this.offset);
       this.offset += this.limit;
+      this.filters.offset = this.offset;
       this.fetchUsers();
     },
     filtersChanged(filters: GetUsersByFiltersRequest) {
