@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-column justify-content-center">
     <h3 class="text-center">تغییر رمز</h3>
+    <div><hr/></div>
     <form>
       <base-input-text
         label="رمز فعلی"
@@ -23,7 +24,8 @@
         @change="v$.newPasswordAgain.$touch"
         :errors="v$.newPasswordAgain.$errors"
       />
-      <div style="margin: auto">
+      <div><hr/></div>
+      <div class="flex justify-content-center" style="margin: auto">
         <Button @click="submit" :disabled="v$.$invalid" class="p-button-sm">
           برو
         </Button>

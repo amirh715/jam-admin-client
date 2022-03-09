@@ -8,7 +8,6 @@
   border-radius: 2px;
   width: 20rem;
   height: 20rem;
-  background-image: url('../../../public/img/Fadaei.jpg');
   background-size: contain;
 }
 </style>

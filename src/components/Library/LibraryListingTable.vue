@@ -55,7 +55,7 @@
     </BlockUI>
   </div>
   <div v-else style="margin: 1rem 0">
-    <no-data-notice :note="noDataNoticeText" />
+    <no-data-notice :note="note" />
   </div>
 </template>
 
@@ -77,7 +77,7 @@ export default {
   props: {
     items: Array,
     loading: Boolean,
-    noDataNoticeText: String,
+    note: String,
   },
   methods: {
     itemClickedOn(e) {

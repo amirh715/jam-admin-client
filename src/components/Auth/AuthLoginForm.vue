@@ -69,7 +69,7 @@ export default defineComponent({
       if (this.v$.$error) return;
       this.waiting = true;
       this.v$.$touch();
-      AuthService.login(this.mobile, this.password, '')
+      AuthService.login(this.mobile, this.password)
         .then(() => {
           this.$router.push({ name: 'Home' });
           this.$store.commit('login',

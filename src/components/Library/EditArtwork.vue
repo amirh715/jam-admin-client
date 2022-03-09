@@ -45,8 +45,8 @@
             v-model="releaseDate"
             :disabled="isAlbumTrack"
             type="date"
+            format="YYYY-MM-DDTHH:mm:ss"
           />
-          {{releaseDate}}
         </div>
       </div>
       <div class="col">
@@ -93,6 +93,12 @@
             @change="v$.producer.$touch"
             :errors="v$.producer.$errors"
             :note="isAlbumTrack && 'تهیه کننده آلبوم برای این آهنگ در نظر گرفته می شود.'"
+          />
+        </div>
+        <div>
+          <base-textarea
+            label="علامت گذاری"
+            v-model="flagNote"
           />
         </div>
       </div>
@@ -148,6 +154,7 @@ export default defineComponent({
   data() {
     return {
       title: (this.artwork as ArtworkDetails).title,
+      flagNote: (this.artwork as ArtworkDetails).flagNote,
       tags: (this.artwork as ArtworkDetails).tags,
       genres: (this.artwork as ArtworkDetails).genres,
       description: (this.artwork as ArtworkDetails).description,
@@ -170,7 +177,7 @@ export default defineComponent({
       return this.artwork.type === 'T' && !this.artwork.album;
     },
     isTrack() {
-      return this.isAlbumTrack || this.isSingleTrack;
+      return this.artwork.type === 'T';
     },
     isAlbum() {
       return this.artwork.type === 'A';
@@ -184,7 +191,7 @@ export default defineComponent({
         this.description,
         this.genres,
         this.tags,
-        this.flag,
+        this.flagNote,
         this.recordLabel,
         this.producer,
         this.releaseDate,

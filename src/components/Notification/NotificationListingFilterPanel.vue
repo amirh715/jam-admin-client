@@ -160,9 +160,7 @@ export default defineComponent({
   },
   methods: {
     changed() {
-      console.log(this.createdAt);
-      console.log(this.lastModifiedAt);
-      console.log(this.scheduledOn);
+      console.log('changed called on notif type');
       const filters = new GetNotificationsByFiltersRequest(
         this.searchTerm,
         this.createdAt[0],
@@ -171,7 +169,7 @@ export default defineComponent({
         this.lastModifiedAt[1],
         this.scheduledOn[0],
         this.scheduledOn[1],
-        this.type && this.type[0].value,
+        this.type && this.type[0] && this.type[0].value,
         this.isSent,
         this.withUndeliveredRecipients,
         this.senderType && this.senderType[0].value,

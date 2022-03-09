@@ -158,7 +158,7 @@ export default defineComponent({
         .catch((err) => {
           this.$toast.add({
             severity: 'error',
-            detail: err.message,
+            detail: err,
             life: 4000,
           });
         });

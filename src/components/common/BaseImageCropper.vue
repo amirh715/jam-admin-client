@@ -44,7 +44,6 @@ export default defineComponent({
     change(event: any) {
       const canvas = event.canvas;
       this.result = canvas.toDataURL();
-      console.log(this.result);
       this.$emit('change', this.result);
     },
   },

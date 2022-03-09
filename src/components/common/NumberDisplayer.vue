@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 export default defineComponent({
   name: 'number-displayer',
   props: {
-    value: String,
+    value: String || Number,
   },
   data() {
     return {

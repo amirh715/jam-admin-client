@@ -4,6 +4,7 @@
       <div class="flex justify-content-center space-v">
         <h3>تغییر نوتیفیکیشن</h3>
       </div>
+      <div class="space-v"><hr/></div>
       <div class="grid">
         <div class="col">
           <base-input-text
@@ -15,12 +16,15 @@
           <base-input-text
             label="لینک"
             v-model="route"
+            @change="v$.route.$touch"
+            :errors="v$.route.$errors"
           />
           <div style="width: 80%; margin: auto;">
             <p class="space">زمان ارسال</p>
             <base-datetime-picker
               type="datetime"
               v-model="scheduledOn"
+              format="YYYY-MM-DDTHH:mm:ss"
             />
           </div>
         </div>
@@ -35,6 +39,8 @@
             <span class="space-v">فایل لیست مخاطبان (فایل csv)</span>
             <FileUpload
               @select="recipientsFileChanged"
+              @clear="recipients = []"
+              @remove="recipients = []"
               accept="text/csv"
               :fileLimit="1"
               :showUploadButton="false"
@@ -48,7 +54,7 @@
       </div>
       <div><hr/></div>
       <div class="flex justify-content-center space-2-v">
-        <Button @click="submit" class="p-button-sm">
+        <Button :disabled="v$.$invalid" @click="submit" class="p-button-sm">
           <vue-feather type="check"></vue-feather>
           <span class="space-h">ثبت</span>
         </Button>
@@ -93,22 +99,26 @@ export default defineComponent({
       message,
       route,
       scheduledOn,
+      recipients,
     } = notification;
     return {
-      title: { title: helpers.withMessage(() => '', title) },
-      message: { message: helpers.withMessage(() => '', message) },
-      route: { route: helpers.withMessage(() => '', route) },
+      title: { title: helpers.withMessage(() => 'عنوان باید حداقل یک کاراکتر باشد.', title) },
+      message: { message: helpers.withMessage(() => 'پیام باید حداقل یک کاراکتر باشد.', message) },
+      route: { route: helpers.withMessage(() => 'آدرس لینک درست نیست.', route) },
       scheduledOn: { scheduledOn: helpers.withMessage(() => '', scheduledOn) },
+      recipients: { recipients },
     };
   },
   methods: {
     recipientsFileChanged(event) {
+      if (event.files.length === 0) return;
       const reader = new FileReader();
       reader.readAsText(event.files[0]);
       reader.onloadend = () => {
         const raw = reader.result as string;
         this.recipients = _.split(raw, /\r?\n|\r/);
         this.recipients.pop();
+        this.v$.recipients.$touch();
       };
     },
     submit() {
@@ -128,8 +138,8 @@ export default defineComponent({
             detail: 'نوتیفیکیشن با موفقیت تغییر کرد.',
             life: 4000,
           });
-          this.$router.push({ name: 'Home' });
-          this.$router.push({ name: 'NotificationListing' });
+          // poor idea
+          this.$router.go({ name: 'Home' });
           this.$emit('submit');
         })
         .catch((err) => {

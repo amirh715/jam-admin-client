@@ -30,7 +30,7 @@ export default {
   name: 'base-datetime-picker',
   emits: ['update:modelValue', 'change'],
   props: {
-    modelValue: String || Array,
+    modelValue: Date || String || Array,
     type: String,
     format: String,
     displayFormat: String,

@@ -54,8 +54,8 @@
         scrollHeight="flex" class="virtual-scroll">
           <template #header>
             <div class="flex justify-content-around">
-              <b>تعداد مخاطبان: {{notification.recipientsCount}}</b>
-              <b>تعداد دریافت شده ها: {{notification.deliveryCount}}</b>
+              <b>تعداد مخاطبان: <number-displayer :value="notification.recipientsCount" /></b>
+              <b>تعداد دریافت شده ها: <number-displayer :value="notification.deliveryCount" /></b>
             </div>
           </template>
           <Column header="مخاطب" field="name" bodyStyle="text-align: right">
@@ -82,7 +82,7 @@
           </Button>
           <Button
             v-if="!notification.isSent"
-            @click="deleteNotification"
+            @dblclick="deleteNotification"
             class="p-button-sm p-button-outlined p-button-danger">
               <vue-feather type="trash-2"></vue-feather>
               <span class="space-h">حذف نوتیفیکیشن</span>
@@ -112,12 +112,15 @@ import NotificationIsSentTag from './NotificationIsSentTag.vue';
 import EditNotificationForm from './EditNotificationForm.vue';
 import { NotificationService } from '@/services/NotificationService';
 import { RemoveNotificationRequest } from '@/classes/Notification/DTOs/commands/RemoveNotificationRequest';
+import NumberDisplayer from '../common/NumberDisplayer.vue';
 
 export default defineComponent({
   name: 'notification-details',
+  emits: ['deleteNotification'],
   components: {
     NotificationIsSentTag,
     EditNotificationForm,
+    NumberDisplayer,
   },
   props: {
     notification: NotificationDetails,
@@ -144,7 +147,7 @@ export default defineComponent({
                 detail: 'نوتیفیکیشن پاک شد.',
                 life: 4000,
               });
-              this.$router.push({ name: 'NotificationListing' });
+              this.$router.push({ name: 'Home' });
             })
             .catch((err) => {
               this.$toast.add({

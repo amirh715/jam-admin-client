@@ -14,7 +14,14 @@
             <div class="flex space-2-v">
               <div class="flex">
                 <vue-feather type="calendar"></vue-feather>
-                <span class="space-h">{{track.releaseDate || 'تاریخ انتشار ندارد'}}</span>
+                <div class="space-h">
+                  <date-time-displayer
+                    v-if="track.releaseDate"
+                    :datetime="track.releaseDate"
+                    :options="{fullTextFormat: 'N Y'}"
+                  />
+                  <span v-else>تاریخ انتشار ندارد</span>
+                </div>
               </div>
               <div class="flex space-2-h">
                 <vue-feather type="disc"></vue-feather>
@@ -110,6 +117,7 @@ import BaseLibraryEntityDetails from './BaseLibraryEntityDetails.vue';
 import LibrarySensitiveOptionsCard from './LibrarySensitiveOptionsCard.vue';
 import { LibraryService } from '@/services/LibraryService';
 import EditArtwork from './EditArtwork.vue';
+import DateTimeDisplayer from '../common/DateTimeDisplayer.vue';
 
 export default defineComponent({
   name: 'track-details',
@@ -118,6 +126,7 @@ export default defineComponent({
     BaseLibraryEntityDetails,
     LibrarySensitiveOptionsCard,
     EditArtwork,
+    DateTimeDisplayer,
   },
   props: {
     track: TrackDetailsDTO,

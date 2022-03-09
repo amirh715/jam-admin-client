@@ -142,7 +142,6 @@
             range
             clearable
           />
-          Value: {{createdAt}}
         </div>
         <p>تاریخ آخرین بروز رسانی</p>
         <div>
@@ -156,16 +155,6 @@
         </div>
       </div>
       <div class="col">
-        <p>تاریخ انتشار (ویژه آثار)</p>
-        <div>
-          <base-datetime-picker
-            v-model="releaseDate"
-            @change="changed"
-            type="datetime"
-            range
-            clearable
-          />
-        </div>
         <div class="space-3-v">
           <Button
             @click="reset"

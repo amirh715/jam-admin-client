@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-column">
     <h3 class="space-2-v text-center">تغییر رمز</h3>
+    <div><hr/></div>
     <form @submit="submit" class="flex flex-column">
       <div>
         <base-input-text
@@ -20,6 +21,7 @@
           :errors="v$.newPasswordAgain.$errors"
         />
       </div>
+      <div><hr/></div>
       <div class="space-2-v flex justify-content-center">
         <Button :disabled="v$.$invalid" type="submit" class="p-button-sm">
           <vue-feather type="check"></vue-feather>
