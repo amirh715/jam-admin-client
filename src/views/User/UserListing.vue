@@ -36,6 +36,7 @@ export default defineComponent({
   data() {
     return {
       items: [],
+      filters: {},
       loading: false,
       waiting: false,
       waitingTimer: null,
@@ -52,17 +53,12 @@ export default defineComponent({
     },
     async loadProfileImages() {
       for (const user of this.items) {
-        try {
-          const profileImage = await UserService.getProfileImage(user.id);
-          const reader = new FileReader();
-          reader.readAsDataURL(profileImage);
-          reader.onload = () => {
-            user.profileImageSrc = reader.result;
-          };
-        } catch (err) {
-          console.log('ERROR for ', user.name);
-          console.log(err);
-        }
+        const profileImage = await UserService.getProfileImage(user.id);
+        const reader = new FileReader();
+        reader.readAsDataURL(profileImage);
+        reader.onload = () => {
+          user.profileImageSrc = reader.result;
+        };
       }
     },
     openUserDetailsDialog(user: UserDetailsDTO) {
@@ -90,7 +86,7 @@ export default defineComponent({
       this.filters.limit = this.limit;
       UserService.getUsersByFilters(this.filters)
         .then((users) => {
-          this.items = users;
+          this.items.push(...users);
           this.loadProfileImages();
         })
         .catch((err) => {

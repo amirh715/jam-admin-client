@@ -6,6 +6,7 @@
       :loading="loading"
       note="بهتر است فیلتر ها را تغییر دهید."
       @loadMore="loadMoreClicked"
+      :loadMoreDisabled="loadMoreDisabled"
     />
   </div>
 </template>
@@ -26,7 +27,7 @@ export default defineComponent({
   data() {
     return {
       items: [],
-      filters: null,
+      filters: {},
       loading: false,
       waiting: false,
       waitingTimer: null,
@@ -34,12 +35,17 @@ export default defineComponent({
       offset: 0,
     };
   },
+  computed: {
+    loadMoreDisabled() {
+      return this.items.length < this.offset;
+    },
+  },
   methods: {
     fetch() {
       this.loading = true;
       LibraryService.getByFilters(this.filters)
         .then((items) => {
-          this.items = items;
+          this.items.push(...items);
           this.loadImages();
         })
         .catch((err) => {
@@ -68,7 +74,9 @@ export default defineComponent({
       }
     },
     loadMoreClicked() {
-      this.filters.offset += this.filters.limit;
+      this.offset += this.limit;
+      this.filters.offset = this.offset;
+      this.fetch();
     },
     filtersChanged(filters: GetLibraryEntitiesByFiltersRequest) {
       if (this.waiting) {

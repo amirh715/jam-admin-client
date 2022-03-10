@@ -342,16 +342,16 @@ class LibraryService {
   }
 
   private static create(object: any): LibraryEntityDetails {
-    if (object.bands) {
+    if (object.type === 'S') {
       return new SingerDetails(object);
     }
-    if (object.members) {
+    if (object.type === 'B') {
       return new BandDetails(object);
     }
-    if (object.tracks) {
+    if (object.type === 'A') {
       return new AlbumDetails(object);
     }
-    if (object.audioPath || object.lyrics) {
+    if (object.type === 'T') {
       return new TrackDetails(object);
     }
     return null;

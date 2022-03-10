@@ -73,8 +73,8 @@ class GetLibraryEntitiesByFiltersRequest {
     this.createdAtTill = createdAtTill;
     this.lastModifiedAtFrom = lastModifiedAtFrom;
     this.lastModifiedAtTill = lastModifiedAtTill;
-    this.limit = limit;
-    this.offset = offset;
+    this.limit = limit || 50;
+    this.offset = offset || 0;
   }
 }
 

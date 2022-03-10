@@ -47,7 +47,7 @@
             </template>
           </Column>
         <template #footer>
-          <Button @click="$emit('loadMore')" class="p-button-link">
+          <Button @click="$emit('loadMore')" :disabled="loadMoreDisabled" class="p-button-link">
             <vue-feather type="loader"></vue-feather>
           </Button>
         </template>
@@ -77,6 +77,7 @@ export default {
   props: {
     items: Array,
     loading: Boolean,
+    loadMoreDisabled: Boolean,
     note: String,
   },
   methods: {

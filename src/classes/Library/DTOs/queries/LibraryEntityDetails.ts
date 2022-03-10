@@ -56,7 +56,6 @@ abstract class LibraryEntityDetails {
     this.flagNote = _props.flagNote;
     this.totalPlayedCount = _props.totalPlayedCount;
     this.duration = _props.duration;
-    console.log('FUCK MEMEMEMEM', _props.createdAt);
     this.createdAt = new Date(_props.createdAt);
     this.lastModifiedAt = new Date(_props.lastModifiedAt);
     this.creatorId = _props.creatorId;

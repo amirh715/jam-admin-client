@@ -6,7 +6,7 @@ class ArtworkDetails extends LibraryEntityDetails {
   public artist: LibraryEntityIdAndTitle;
   public recordLabel: string;
   public producer: string;
-  public releaseDate: Date;
+  public releaseDate: string;
 
   public constructor(
     _props: {
@@ -41,7 +41,7 @@ class ArtworkDetails extends LibraryEntityDetails {
     this.artist = _props.artist;
     this.recordLabel = _props.recordLabel;
     this.producer = _props.producer;
-    this.releaseDate = _props.releaseDate;
+    this.releaseDate = new Date(_props.releaseDate).toISOString();
   }
 }
 

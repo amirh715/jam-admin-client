@@ -20,27 +20,21 @@
         <small>{{note}}</small>
       </div>
     </div>
-    <div v-if="showPreview">
-      <player :src="audio" />
+    <div v-if="showPreview" class="space-v">
+      <audio controls>
+        <source :src="audio" type="audio/mpeg">
+      </audio>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Player from '@/components/Library/Player.vue';
 import { dataURItoBlob } from '@/utils/dataURItoBlob';
 
 export default defineComponent({
   name: 'base-audio-input',
   emits: ['change'],
-  components: {
-    Player,
-  },
   props: {
     label: String,
     note: String,
@@ -55,17 +49,14 @@ export default defineComponent({
     };
   },
   methods: {
-    uploader() {
-      console.log();
-    },
     add(event: any) {
       const reader = new FileReader();
       reader.readAsDataURL(event.files[0]);
-      reader.onload = () => {
+      reader.onloadend = () => {
         this.audio = reader.result;
         this.$emit('change', dataURItoBlob(this.audio));
+        this.showPreview = true;
       };
-      this.showPreview = true;
     },
     remove(event: any) {
       this.audio = null;
