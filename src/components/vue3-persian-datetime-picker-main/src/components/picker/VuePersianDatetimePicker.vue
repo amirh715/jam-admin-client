@@ -1291,7 +1291,6 @@ export default {
     window.addEventListener('mousedown', this.onWindowClick, true)
   },
   onBeforeUnmount() {
-    console.log('onBeforeUnmount')
     window.clearInterval(this.updateNowInterval)
     window.removeEventListener('resize', this.onWindowResize, true)
     window.removeEventListener('mousedown', this.onWindowClick, true)

@@ -66,7 +66,6 @@ class AuthService {
     if (this.fcmToken) {
       data.append('FCMToken', this.fcmToken);
     }
-    console.log('FCMTOkne : ', this.fcmToken);
     try {
       const response = await HttpService.post(this.PATHS.login, data);
       const token: string = response.data.token;

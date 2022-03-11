@@ -26,7 +26,6 @@ class HttpService {
   public static async get(path: string, query?: string, configg?: AxiosRequestConfig)
     : Promise<AxiosResponse> {
     const p = `${config.baseURL}${path}${query || ''}`;
-    console.log(`HttpService (get): ${p}`);
     return http.get(p, configg || config);
   }
 

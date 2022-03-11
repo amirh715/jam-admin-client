@@ -246,12 +246,6 @@ export default defineComponent({
           this.imageSrc = reader.result;
         };
       })
-      .catch((err) => {
-        if (err.code === 404) {
-          console.log('404');
-        }
-        console.log(err);
-      })
       .finally(() => {
         this.imageLoading = false;
       });

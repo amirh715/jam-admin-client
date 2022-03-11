@@ -24,45 +24,12 @@
               <number-displayer class="space-2-h" :value="currentDurationDisplayValue" />
             </div>
             <div class="flex justify-content-center align-items-center">
-              <div class="space-2-h">
-                <Button
-                  @click="shuffleButtonClicked"
-                  :style="{color: shuffleStyle}"
-                  :disabled="disabled"
-                  class="p-button-sm p-button-link">
-                    <vue-feather type="shuffle"></vue-feather>
-                </Button>
-              </div>
-              <div class="flex justify-content-center align-items-center">
-                <Button
-                  class="p-button-sm p-button-link"
-                  @click="skipForwardButtonClicked"
-                  :disabled="disabled || skipForwardDisabled">
-                  <vue-feather type="skip-forward" size="1.5rem"></vue-feather>
-                </Button>
-                <Button
-                  @click="playButtonClicked"
-                  :disabled="disabled"
-                  class="p-button-sm p-button-link space-2-h" >
-                    <vue-feather :type="playing ? 'pause' : 'play'" size="2.5rem"></vue-feather>
-                </Button>
-                <Button
-                  class="p-button-sm p-button-link"
-                  @click="skipBackButtonClicked"
-                  :disabled="disabled || skipBackDisabled">
-                  <vue-feather type="skip-back" size="1.5rem"></vue-feather>
-                </Button>
-              </div>
-              <div class="space-2-h">
-                <Button
-                  class="p-button-sm p-button-link"
-                  :style="{color: repeatStyle}"
-                  @click="repeatButtonClicked"
-                  :disabled="disabled"
-                >
-                  <vue-feather type="repeat"></vue-feather>
-                </Button>
-              </div>
+              <Button
+                @click="playButtonClicked"
+                :disabled="disabled"
+                class="p-button-sm p-button-link space-2-h" >
+                  <vue-feather :type="playing ? 'pause' : 'play'" size="2.5rem"></vue-feather>
+              </Button>
             </div>
           </div>
         </div>
@@ -121,31 +88,13 @@ export default defineComponent({
     totalDurationDisplayValue() {
       return AudioManager.getDurationForDisplay(this.totalDuration);
     },
-    repeatStyle() {
-      return this.repeatOn ? '' : 'whitesmoke';
-    },
-    shuffleStyle() {
-      return this.shuffleOn ? '' : 'whitesmoke';
-    },
   },
   methods: {
     playButtonClicked() {
       this.$emit(this.playing ? 'pause' : 'play');
     },
-    shuffleButtonClicked() {
-      this.$emit('shuffle', !this.shuffleOn);
-    },
-    repeatButtonClicked() {
-      this.$emit('repeat', !this.repeatOn);
-    },
     seekEnded(seekPosition: number) {
       this.$emit('seek', seekPosition);
-    },
-    skipForwardButtonClicked() {
-      this.$emit('skipForward');
-    },
-    skipBackButtonClicked() {
-      this.$emit('skipBack');
     },
   },
 });

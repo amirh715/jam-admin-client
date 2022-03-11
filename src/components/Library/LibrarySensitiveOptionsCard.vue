@@ -104,7 +104,6 @@ export default defineComponent({
       });
     },
     publish() {
-      console.log('push me');
       let headerText = this.value.isPublished ? 'آرشیوسازی' : 'انتشار';
       let messageText = 'حذف یک هنرمند/اثر غیرقابل بازگشت است. مطمئن هستید؟';
       const acceptLabelText = 'بله. ادامه بده.';

@@ -40,7 +40,6 @@ class NotificationService {
   }
 
   public static async editNotification(dto: EditNotificationRequest): Promise<void> {
-    console.log('Route: ', dto.route);
     try {
       const data = new FormData();
       data.append('id', dto.id);
@@ -89,9 +88,6 @@ class NotificationService {
   public static async getNotificationsOfRecipients(dto: GetNotificationsOfRecipientRequest)
   : Promise<RecipientNotification[]> {
     try {
-      _.forOwn(dto, (v, k) => {
-        console.log(dto, v, k);
-      });
       const { data } = await HttpService.get(this.PATHS.GET_NOTIFICATIONS_OF_RECIPIENTS, '');
       return Promise.resolve(_.orderBy(data, ['scheduledOn'], ['desc']));
     } catch (err) {

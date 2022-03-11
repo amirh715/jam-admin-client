@@ -160,7 +160,6 @@ export default defineComponent({
   },
   methods: {
     changed() {
-      console.log('changed called on notif type');
       const filters = new GetNotificationsByFiltersRequest(
         this.searchTerm,
         this.createdAt[0],

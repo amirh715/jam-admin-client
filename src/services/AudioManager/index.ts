@@ -23,7 +23,6 @@ class AudioManager extends EventTarget {
   public async play(): Promise<void> {
     try {
       if (this.howler) {
-        console.log('AudioManager.play() -> this.stop()');
         this.stop();
       }
       this.currentTrack = this.queue[this.currentQueueIndex];
@@ -33,25 +32,13 @@ class AudioManager extends EventTarget {
         format: ['mp3'],
         html5: true,
         onload: () => {
-          console.log('onload');
           this.playedDuration = new Timer();
           this.timerId = setInterval(() => {
-            console.log('Played duration: ', this.playedDuration.getDuration());
             if (this.playedDuration.getDuration() === 7) {
               this.dispatchEvent(new Event('trackPlayed'));
               clearInterval(this.timerId);
             }
           }, 1000, []);
-        },
-        onplayerror: (err) => {
-          console.log('onplayerror');
-          console.log(err);
-        },
-        onloaderror: (err) => {
-          console.log('onloaderror');
-        },
-        onunlock: () => {
-          console.log('UNLOCKED');
         },
         onplay: () => {
           this.playedDuration.start();
@@ -64,16 +51,6 @@ class AudioManager extends EventTarget {
         },
         onend: () => {
           this.stop();
-          this.playedDuration.reset();
-          if (this.isRepeatOn()) {
-            this.play();
-            return;
-          }
-          if (this.isShuffleOn()) {
-            this.currentQueueIndex = _.random(0, this.queue.length - 1);
-            this.currentTrack = this.queue[this.currentQueueIndex];
-            this.play();
-          }
         },
       });
       this.soundId = this.howler.play();

@@ -51,7 +51,6 @@ export default defineComponent({
             });
             vm.$router.push({ name: 'Home' });
           } else {
-            console.log(reports);
             vm['init'](reports);
           }
         });

@@ -121,7 +121,6 @@ export default defineComponent({
     },
   },
   beforeRouteEnter(to, from, next) {
-    console.log('before route enter');
     UserService.getUsersByFilters(null)
       .then((users) => {
         next((vm) => {

@@ -21,7 +21,6 @@ class CreateNotificationRequest {
     recipients: string[],
     image: any,
   ) {
-    console.log('Type', type);
     this.type = type;
     this.title = title;
     this.message = message;

@@ -86,7 +86,6 @@ class LibraryService {
         payload.append('tags', JSON.stringify(track.tags));
       }
       if (track.genreIds) {
-        console.log(track.genreIds);
         payload.append('genreIds', JSON.stringify(track.genreIds));
       }
       if (track.image) {
@@ -131,7 +130,6 @@ class LibraryService {
   public static async getById(id: string): Promise<LibraryEntityDetails> {
     try {
       const { data } = await HttpService.get(`${LIBRARY_PATHS.GET_ENTITY_BY_ID}/${id}`);
-      console.log(this.create(data));
       return Promise.resolve(this.create(data));
     } catch (err) {
       return Promise.reject();

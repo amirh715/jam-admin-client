@@ -56,7 +56,6 @@ export default defineComponent({
   methods: {
     setData(entityDetails: LibraryEntityDetails) {
       this.entityDetails = entityDetails;
-      console.log(this.entityDetails);
     },
     changed() {
       const entityId = this.entityDetails.id;

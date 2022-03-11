@@ -111,7 +111,6 @@ export default defineComponent({
       artworksFilter.artistId = this.artist.id;
       LibraryService.getByFilters(artworksFilter)
         .then((entityDetails: TrackDetails[] | AlbumDetails[]) => {
-          console.log(entityDetails);
           this.singles = _.filter(entityDetails, (track) =>
             track instanceof TrackDetails && !track.isAlbumTrack());
           this.albums = _.filter(entityDetails, (album) =>
@@ -127,24 +126,20 @@ export default defineComponent({
         });
     },
     async loadArtworksImages() {
-      try {
-        const reader = new FileReader();
-        for (const single of this.singles) {
-          const image = await LibraryService.getImageById(single.id);
-          reader.readAsDataURL(image);
-          reader.onload = () => {
-            single.imageSrc = reader.result;
-          };
-        }
-        for (const album of this.albums) {
-          const image = await LibraryService.getImageById(album.id);
-          reader.readAsDataURL(image);
-          reader.onload = () => {
-            album.imageSrc = reader.result;
-          };
-        }
-      } catch (err) {
-        console.log(err);
+      const reader = new FileReader();
+      for (const single of this.singles) {
+        const image = await LibraryService.getImageById(single.id);
+        reader.readAsDataURL(image);
+        reader.onload = () => {
+          single.imageSrc = reader.result;
+        };
+      }
+      for (const album of this.albums) {
+        const image = await LibraryService.getImageById(album.id);
+        reader.readAsDataURL(image);
+        reader.onload = () => {
+          album.imageSrc = reader.result;
+        };
       }
     },
     goToInstagramPage() {
@@ -221,11 +216,6 @@ export default defineComponent({
         reader.onload = () => {
           this.imageSrc = reader.result;
         };
-      })
-      .catch((err) => {
-        if (err.code === 404) {
-          console.log('404');
-        }
       })
       .finally(() => {
         this.imageLoading = false;

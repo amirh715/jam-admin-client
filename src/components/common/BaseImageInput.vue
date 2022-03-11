@@ -75,9 +75,6 @@ export default defineComponent({
     };
   },
   methods: {
-    uploader(event: any) {
-      console.log(event);
-    },
     add(event: any) {
       this.image = event.files[0].objectURL;
     },

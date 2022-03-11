@@ -72,7 +72,6 @@ export default defineComponent({
     },
     changed(value: string) {
       if (value.length < 4) return;
-      console.log(this.code);
       this.submit();
     },
   },

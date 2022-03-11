@@ -43,7 +43,6 @@ class UserDetails {
       profileImageSrc: string,
     },
   ) {
-    console.log(this.createdAt, this.lastModifiedAt);
     this.id = _props.id;
     this.name = _props.name;
     this.mobile = _props.mobile;

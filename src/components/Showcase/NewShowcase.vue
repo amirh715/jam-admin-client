@@ -130,7 +130,6 @@ export default defineComponent({
           toastSeverity = 'success';
         })
         .catch((err) => {
-          console.log(err);
           toastMessage = err;
           toastSeverity = 'error';
         })

@@ -61,16 +61,12 @@ export default defineComponent({
     },
     async loadImages() {
       for (const entity of this.items) {
-        try {
-          const image = await LibraryService.getImageById(entity.id);
-          const reader = new FileReader();
-          reader.readAsDataURL(image);
-          reader.onload = () => {
-            entity.imageSrc = reader.result;
-          };
-        } catch (err) {
-          console.log(err);
-        }
+        const image = await LibraryService.getImageById(entity.id);
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = () => {
+          entity.imageSrc = reader.result;
+        };
       }
     },
     loadMoreClicked() {

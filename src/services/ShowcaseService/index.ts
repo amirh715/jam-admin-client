@@ -22,7 +22,6 @@ class ShowcaseService {
       const { data } = await HttpService.get(`${SHOWCASE_PATHS.GET_SHOWCASE_IMAGE_BY_ID}/${id}`, '', { responseType: 'blob' });
       return Promise.resolve(new Blob([data], { type: 'image/jpg' }));
     } catch (err) {
-      console.log(err);
       if (err.message.data) {
         return Promise.reject(err.message.data);
       }

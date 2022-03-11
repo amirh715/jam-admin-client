@@ -172,10 +172,6 @@ export default defineComponent({
         this.recipients.pop();
       };
     },
-    test(e) {
-      console.log(this.scheduledOn);
-      console.log(e);
-    },
   },
 });
 </script>

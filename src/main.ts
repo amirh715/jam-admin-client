@@ -143,9 +143,7 @@ app.component('Player', Player);
 app.component(VueFeather.name || '', VueFeather);
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker-dev.js')
-    .then(() => console.log('Success'))
-    .catch((err) => console.log(err));
+  navigator.serviceWorker.register('./service-worker-dev.js');
 }
 
 app.mount('#app');
@@ -155,8 +153,6 @@ AudioManager.addEventListener('trackPlayed', () => {
   Database.playedTracks.add(playedTrack).then(async (v) => {
     await LibraryService.trackPlayed(playedTrack);
     await Database.playedTracks.delete(v);
-  }).catch((err) => {
-    console.log(err);
   });
 });
 
@@ -165,43 +161,9 @@ AppManager.syncPlayedTracks();
 // service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: '/' })
-      .then((registeration) => console.log('registered', registeration))
-      .catch((err) => console.log(err));
+    navigator.serviceWorker.register('./service-worker-dev.js', { scope: './' });
   });
-  navigator.serviceWorker.register('firebase-messaging-sw.js', { scope: '/*' })
-    .then(() => {
-      // Firebase Cloud Messaging
-      const fcmConfig: FirebaseOptions = {
-        apiKey: 'AIzaSyC39bXdJAlAjLapfKqL3nrKPNzUXkg95xs',
-        authDomain: 'jamusic-5fd24.firebaseapp.com',
-        projectId: 'jamusic-5fd24',
-        storageBucket: 'jamusic-5fd24.appspot.com',
-        messagingSenderId: '603123320217',
-        appId: '1:603123320217:web:949f1cf984ed253ff53f08',
-        measurementId: 'G-8QJSDQDV4R',
-      };
-      const firebase = initializeApp(fcmConfig);
-      const messaging = getMessaging(firebase);
-      getToken(messaging, { vapidKey: 'BORT7Rl_GFJE-IaNyl8nih6FRmRMQUHijKUpbNy1kIkAm1E4khGtobXs4gPhCZarcpThVsaJ9rtOkQfZymc67g0' })
-        .then(async (currentToken) => {
-          if (currentToken) {
-            await AuthService.updateFCMToken(currentToken);
-          } else {
-            console.log('getToken() : ', 'No registeration token is available.');
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      onMessage(messaging, (payload) => {
-        console.log('onMessage(): ', payload);
-        alert('onMessage called');
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  navigator.serviceWorker.register('firebase-messaging-sw.js', { scope: '/*' });
 
   if (navigator.onLine) store.commit('online');
   window.addEventListener('online', () => store.commit('online'));
