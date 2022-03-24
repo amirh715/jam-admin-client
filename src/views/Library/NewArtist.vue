@@ -1,103 +1,105 @@
 <template>
-  <Card style="width: 60%; margin: auto;">
-    <template #content>
-      <div class="flex flex-column justify-content-center">
-        <div>
-          <h3>هنرمند جدید</h3>
-        </div>
-        <div class="space-v"><hr/></div>
-        <div class="grid">
-          <div class="col">
-            <div>
-              <base-input-text
-                label="عنوان"
-                v-model="title"
-                @change="v$.title.$touch"
-                :errors="v$.title.$errors"
-                note="فارسی برای هنرمندان ایرانی و انگلیسی برای هنرمندان خارجی"
-              />
-            </div>
-            <div>
-              <base-tags-input
-                label="تگ ها"
-                v-model="tags"
-                @change="v$.tags.$touch"
-                :errors="v$.tags.$errors"
-                note="فینگلیش عنوان، لقب، نام های دیگر، و ..."
-              />
-            </div>
-            <div>
-              <base-multi-select-input
-                label="سبک ها"
-                v-model="genres"
-                :options="allGenres"
-                optionLabel="title"
-                :selectionLimit="2"
-                :placeholder="genresLoadingPlaceholder"
-                :disabled="waitingForGenresToLoad"
-                note="سبک های آثار هنرمند زیرمجموعه ای از سبک های هنرمندشان خواهند بود."
-              />
-            </div>
-            <div>
-              <base-textarea
-                label="توضیحات"
-                v-model="description"
-                @change="v$.description.$touch"
-                :errors="v$.description.$errors"
-                note="چند جمله کوتاه درباره هنرمند..."
-              />
-            </div>
-            <div class="flex justify-content-center align-items-center">
-              <vue-feather type="instagram"></vue-feather>
-              <base-input-text
-                v-model="instagramId"
-                @change="v$.instagramId.$touch"
-                :errors="v$.instagramId.$errors"
-              />
-            </div>
+  <BlockUI :blocked="blocked" style="width: 60%; margin: auto;">
+    <Card style="width: 100%; margin: auto;">
+      <template #content>
+        <div class="flex flex-column justify-content-center">
+          <div>
+            <h3>هنرمند جدید</h3>
           </div>
-          <div class="col">
-            <div class="flex justify-content-center space-2-v">
-              <span class="space-2-h">نوع هنرمند:</span>
+          <div class="space-v"><hr/></div>
+          <div class="grid">
+            <div class="col">
               <div>
-                <RadioButton v-model="artistType" value="S"></RadioButton>
-                <label class="space-h">خواننده</label>
+                <base-input-text
+                  label="عنوان"
+                  v-model="title"
+                  @change="v$.title.$touch"
+                  :errors="v$.title.$errors"
+                  note="فارسی برای هنرمندان ایرانی و انگلیسی برای هنرمندان خارجی"
+                />
               </div>
               <div>
-                <RadioButton v-model="artistType" value="B"></RadioButton>
-                <label class="space-h">گروه</label>
+                <base-tags-input
+                  label="تگ ها"
+                  v-model="tags"
+                  @change="v$.tags.$touch"
+                  :errors="v$.tags.$errors"
+                  note="فینگلیش عنوان، لقب، نام های دیگر، و ..."
+                />
+              </div>
+              <div>
+                <base-multi-select-input
+                  label="سبک ها"
+                  v-model="genres"
+                  :options="allGenres"
+                  optionLabel="title"
+                  :selectionLimit="2"
+                  :placeholder="genresLoadingPlaceholder"
+                  :disabled="waitingForGenresToLoad"
+                  note="سبک های آثار هنرمند زیرمجموعه ای از سبک های هنرمندشان خواهند بود."
+                />
+              </div>
+              <div>
+                <base-textarea
+                  label="توضیحات"
+                  v-model="description"
+                  @change="v$.description.$touch"
+                  :errors="v$.description.$errors"
+                  note="چند جمله کوتاه درباره هنرمند..."
+                />
+              </div>
+              <div class="flex justify-content-center align-items-center">
+                <vue-feather type="instagram"></vue-feather>
+                <base-input-text
+                  v-model="instagramId"
+                  @change="v$.instagramId.$touch"
+                  :errors="v$.instagramId.$errors"
+                />
               </div>
             </div>
-            <div>
-              <base-image-input
-                label="انتخاب عکس هنرمند"
-                :editable="true"
-                :stencilProps="{aspectRatio: 1/1}"
-                v-model="image"
-                @cropped="imageCropped"
-              />
-            </div>
-            <div>
-              <base-textarea
-                label="علامت گذاری"
-                v-model="flag"
-                @change="v$.flag.$touch"
-                :errors="v$.flag.$errors"
-                note="این یادداشت تنها برای ادمین های سیستم قابل مشاهده است."
-              />
+            <div class="col">
+              <div class="flex justify-content-center space-2-v">
+                <span class="space-2-h">نوع هنرمند:</span>
+                <div>
+                  <RadioButton v-model="artistType" value="S"></RadioButton>
+                  <label class="space-h">خواننده</label>
+                </div>
+                <div>
+                  <RadioButton v-model="artistType" value="B"></RadioButton>
+                  <label class="space-h">گروه</label>
+                </div>
+              </div>
+              <div>
+                <base-image-input
+                  label="انتخاب عکس هنرمند"
+                  :editable="true"
+                  :stencilProps="{aspectRatio: 1/1}"
+                  v-model="image"
+                  @cropped="imageCropped"
+                />
+              </div>
+              <div>
+                <base-textarea
+                  label="علامت گذاری"
+                  v-model="flag"
+                  @change="v$.flag.$touch"
+                  :errors="v$.flag.$errors"
+                  note="این یادداشت تنها برای ادمین های سیستم قابل مشاهده است."
+                />
+              </div>
             </div>
           </div>
+          <div><hr/></div>
+          <div class="space-2-v">
+            <Button :disabled="v$.$invalid || blocked" @click="submit" class="p-button-sm">
+              <vue-feather :type="blocked ? 'loader' : 'check'"></vue-feather>
+              <span class="space-h">{{blocked ? 'منتظر باشید...' : 'ایجاد هنرمند جدید'}}</span>
+            </Button>
+          </div>
         </div>
-        <div><hr/></div>
-        <div class="space-2-v">
-          <Button :disabled="v$.$invalid" @click="submit" class="p-button-sm">
-            <vue-feather type="check"></vue-feather>
-            <span class="space-h">ایجاد هنرمند جدید</span>
-          </Button>
-        </div>
-      </div>
-    </template>
-  </Card>
+      </template>
+    </Card>
+  </BlockUI>
 </template>
 
 <script lang="ts">
@@ -143,10 +145,12 @@ export default defineComponent({
       allGenres: [],
       waitingForGenresToLoad: false,
       genresLoadingPlaceholder: 'منتظر باشید...',
+      blocked: false,
     };
   },
   methods: {
     submit() {
+      this.blocked = true;
       const dto = new CreateArtistRequest(
         this.artistType,
         this.title,
@@ -172,6 +176,9 @@ export default defineComponent({
             detail: err.message,
             life: 4000,
           });
+        })
+        .finally(() => {
+          this.blocked = false;
         });
     },
     fetchGenres() {

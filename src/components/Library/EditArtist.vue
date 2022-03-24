@@ -1,97 +1,99 @@
 <template>
-  <div class="flex flex-column justify-content-center">
-    <div>
-      <h3 class="text-center">اصلاح {{artist.title}}</h3>
-    </div>
-    <div class="space-v"><hr/></div>
-    <div class="grid">
-      <div class="col">
-        <div>
-          <base-input-text
-            label="عنوان"
-            v-model="title"
-            @change="v$.title.$touch"
-            :errors="v$.title.$errors"
-          />
+  <BlockUI :blocked="blocked">
+    <div class="flex flex-column justify-content-center">
+      <div>
+        <h3 class="text-center">اصلاح {{artist.title}}</h3>
+      </div>
+      <div class="space-v"><hr/></div>
+      <div class="grid">
+        <div class="col">
+          <div>
+            <base-input-text
+              label="عنوان"
+              v-model="title"
+              @change="v$.title.$touch"
+              :errors="v$.title.$errors"
+            />
+          </div>
+          <div>
+            <base-tags-input
+              label="تگ ها"
+              v-model="tags"
+              @change="v$.tags.$touch"
+              :errors="v$.tags.$errors"
+            />
+          </div>
+          <div>
+            <base-multi-select-input
+              label="سبک ها"
+              v-model="genres"
+              :options="genreOptions"
+              :selectionLimit="2"
+              optionLabel="title"
+            />
+          </div>
+          <div>
+            <base-textarea
+              label="توضیحات"
+              v-model="description"
+              @change="v$.description.$touch"
+              :errors="v$.description.$errors"
+            />
+          </div>
+          <div class="flex">
+            <span class="space-h">
+              <vue-feather type="instagram"></vue-feather>
+            </span>
+            <base-input-text
+              v-model="instagramId"
+              @change="v$.instagramId.$touch"
+              :errors="v$.instagramId.$errors"
+            />
+          </div>
         </div>
-        <div>
-          <base-tags-input
-            label="تگ ها"
-            v-model="tags"
-            @change="v$.tags.$touch"
-            :errors="v$.tags.$errors"
-          />
-        </div>
-        <div>
-          <base-multi-select-input
-            label="سبک ها"
-            v-model="genres"
-            :options="genreOptions"
-            :selectionLimit="2"
-            optionLabel="title"
-          />
-        </div>
-        <div>
-          <base-textarea
-            label="توضیحات"
-            v-model="description"
-            @change="v$.description.$touch"
-            :errors="v$.description.$errors"
-          />
-        </div>
-        <div class="flex">
-          <span class="space-h">
-            <vue-feather type="instagram"></vue-feather>
-          </span>
-          <base-input-text
-            v-model="instagramId"
-            @change="v$.instagramId.$touch"
-            :errors="v$.instagramId.$errors"
-          />
+        <div class="col">
+          <div>
+            <base-image-input
+              :disabled="removeImage"
+              label="عکس هنرمند"
+              v-model="image"
+              :editable="true"
+              :stencilProps="{aspectRatio: 1/1}"
+              @cropped="imageSelected"
+            />
+          </div>
+          <div class="space-v flex justify-content-center">
+            <Button
+              @click="removeImage = !removeImage" class="p-button-sm p-button-link">
+                <div v-if="removeImage" class="flex">
+                  <vue-feather type="check"></vue-feather>
+                  <span class="space-h">عکس هنرمند پاک خواهد شد.</span>
+                </div>
+                <div v-else class="flex">
+                  <vue-feather type="trash-2"></vue-feather>
+                  <span class="space-h">حذف عکس هنرمند</span>
+                </div>
+            </Button>
+          </div>
+          <div>
+            <base-textarea
+              label="علامت گذاری"
+              v-model="flagNote"
+              @change="v$.flagNote.$touch"
+              :errors="v$.flagNote.$errors"
+            />
+          </div>
         </div>
       </div>
-      <div class="col">
-        <div>
-          <base-image-input
-            :disabled="removeImage"
-            label="عکس هنرمند"
-            v-model="image"
-            :editable="true"
-            :stencilProps="{aspectRatio: 1/1}"
-            @cropped="imageSelected"
-          />
-        </div>
-        <div class="space-v flex justify-content-center">
-          <Button
-            @click="removeImage = !removeImage" class="p-button-sm p-button-link">
-              <div v-if="removeImage" class="flex">
-                <vue-feather type="check"></vue-feather>
-                <span class="space-h">عکس هنرمند پاک خواهد شد.</span>
-              </div>
-              <div v-else class="flex">
-                <vue-feather type="trash-2"></vue-feather>
-                <span class="space-h">حذف عکس هنرمند</span>
-              </div>
-          </Button>
-        </div>
-        <div>
-          <base-textarea
-            label="علامت گذاری"
-            v-model="flagNote"
-            @change="v$.flagNote.$touch"
-            :errors="v$.flagNote.$errors"
-          />
-        </div>
+      <div class="space-v"><hr/></div>
+      <div class="flex justify-content-center">
+        <Button :disabled="v$.$invalid || blocked" @click="submit" class="p-button-sm">
+          <vue-feather :type="blocked ? 'loader' : 'save'"></vue-feather>
+          <span class="space-h">{{blocked ? 'منتظر باشید...' : 'ذخیره'}}</span>
+        </Button>
       </div>
     </div>
-    <div class="space-v"><hr/></div>
-    <div class="flex justify-content-center">
-      <Button :disabled="v$.$invalid" @click="submit" class="p-button-sm">
-        <vue-feather type="save"></vue-feather>
-        <span class="space-h">ذخیره</span>
-      </Button>
-    </div>
-  </div>
+  </BlockUI>
 </template>
 
 <script lang="ts">
@@ -141,10 +143,12 @@ export default defineComponent({
       removeImage: false,
       genrePlaceholderText: 'منتظر باشید...',
       genresInputDisabled: true,
+      blocked: false,
     };
   },
   methods: {
     submit() {
+      this.blocked = true;
       const dto = new EditArtistRequest(
         this.artist.id,
         this.title,
@@ -171,6 +175,9 @@ export default defineComponent({
             detail: err.message,
             life: 4000,
           });
+        })
+        .finally(() => {
+          this.blocked = false;
         });
     },
     imageSelected(image: Blob) {

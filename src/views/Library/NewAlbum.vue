@@ -1,112 +1,114 @@
 <template>
-  <Card style="width: 60%; margin: auto">
-    <template #content>
-      <div class="flex flex-column justify-content-center">
-        <div>
-          <h3>آلبوم جدید {{artistTitle}}</h3>
-        </div>
-        <div class="space-v"><hr/></div>
-        <div class="grid">
-          <div class="col">
-            <div>
-              <base-input-text
-                label="عنوان"
-                v-model="title"
-                @change="v$.title.$touch"
-                :errors="v$.title.$errors"
-                note="فارسی برای آلبوم های فارسی و انگلیسی برای آلبوم های خارجی"
-              />
+  <BlockUI :blocked="blocked" style="width: 100%; margin: auto">
+    <Card style="width: 100%; margin: auto">
+      <template #content>
+        <div class="flex flex-column justify-content-center">
+          <div>
+            <h3>آلبوم جدید {{artistTitle}}</h3>
+          </div>
+          <div class="space-v"><hr/></div>
+          <div class="grid">
+            <div class="col">
+              <div>
+                <base-input-text
+                  label="عنوان"
+                  v-model="title"
+                  @change="v$.title.$touch"
+                  :errors="v$.title.$errors"
+                  note="فارسی برای آلبوم های فارسی و انگلیسی برای آلبوم های خارجی"
+                />
+              </div>
+              <div>
+                <base-tags-input
+                  label="تگ ها"
+                  v-model="tags"
+                  @change="v$.tags.$touch"
+                  :errors="v$.tags.$invalid"
+                  note="عنوان آلبوم به فینگلیش"
+                />
+              </div>
+              <div>
+                <base-multi-select-input
+                  label="سبک ها"
+                  v-model="genres"
+                  :options="genresOfArtist"
+                  optionLabel="title"
+                  :selectionLimit="2"
+                  :placeholder="loadingGenresPlaceholder"
+                  note="سبک آلبوم از میان سبک های هنرمند آن"
+                />
+              </div>
+              <div>
+                <base-textarea
+                  label="توضیحات"
+                  v-model="description"
+                  @change="v$.description.$touch"
+                  :errors="v$.description.$errors"
+                  note="چند جمله کوتاه درباره آلبوم..."
+                />
+              </div>
+              <div>
+                <base-input-text
+                  label="لیبل"
+                  v-model="recordLabel"
+                  @change="v$.recordLabel.$touch"
+                  :errors="v$.recordLabel.$errors"
+                  note="عنوان رکورد لیبل"
+                />
+              </div>
+              <div>
+                <base-input-text
+                  label="تهیه کننده"
+                  v-model="producer"
+                  @change="v$.producer.$touch"
+                  :errors="v$.producer.$errors"
+                  note="عنوان تهیه کننده"
+                />
+              </div>
             </div>
-            <div>
-              <base-tags-input
-                label="تگ ها"
-                v-model="tags"
-                @change="v$.tags.$touch"
-                :errors="v$.tags.$invalid"
-                note="عنوان آلبوم به فینگلیش"
-              />
-            </div>
-            <div>
-              <base-multi-select-input
-                label="سبک ها"
-                v-model="genres"
-                :options="genresOfArtist"
-                optionLabel="title"
-                :selectionLimit="2"
-                :placeholder="loadingGenresPlaceholder"
-                note="سبک آلبوم از میان سبک های هنرمند آن"
-              />
-            </div>
-            <div>
-              <base-textarea
-                label="توضیحات"
-                v-model="description"
-                @change="v$.description.$touch"
-                :errors="v$.description.$errors"
-                note="چند جمله کوتاه درباره آلبوم..."
-              />
-            </div>
-            <div>
-              <base-input-text
-                label="لیبل"
-                v-model="recordLabel"
-                @change="v$.recordLabel.$touch"
-                :errors="v$.recordLabel.$errors"
-                note="عنوان رکورد لیبل"
-              />
-            </div>
-            <div>
-              <base-input-text
-                label="تهیه کننده"
-                v-model="producer"
-                @change="v$.producer.$touch"
-                :errors="v$.producer.$errors"
-                note="عنوان تهیه کننده"
-              />
+            <div class="col">
+              <div>
+                <base-image-input
+                  label="انتخاب عکس آلبوم"
+                  :editable="true"
+                  v-model="image"
+                />
+              </div>
+              <div>
+                <base-textarea
+                  label="علامت گذاری"
+                  v-model="flag"
+                  @change="v$.flag.$touch"
+                  :errors="v$.flag.$errors"
+                  note="این یادداشت تنها برای ادمین های سیستم قابل مشاهده است."
+                />
+              </div>
+              <div style="width: 60%; margin: auto;">
+                <p class="space-v">تاریخ انتشار</p>
+                <datetime-picker
+                  type="date"
+                  v-model="releaseDate"
+                />
+              </div>
             </div>
           </div>
-          <div class="col">
-            <div>
-              <base-image-input
-                label="انتخاب عکس آلبوم"
-                :editable="true"
-                v-model="image"
-              />
-            </div>
-            <div>
-              <base-textarea
-                label="علامت گذاری"
-                v-model="flag"
-                @change="v$.flag.$touch"
-                :errors="v$.flag.$errors"
-                note="این یادداشت تنها برای ادمین های سیستم قابل مشاهده است."
-              />
-            </div>
-            <div style="width: 60%; margin: auto;">
-              <p class="space-v">تاریخ انتشار</p>
-              <datetime-picker
-                type="date"
-                v-model="releaseDate"
-              />
-            </div>
+          <div class="space-2-v">
+            <Button @click="submit"
+              :disabled="v$.$invalid || !$store.state.isOnline || blocked" class="p-button-sm">
+                <div v-if="$store.state.isOnline" class="flex">
+                  <vue-feather :type="blocked ? 'loader' : 'check'"></vue-feather>
+                  <span class="space-h">{{blocked ? 'منتظر باشید...' : 'ایجاد آلبوم جدید'}}</span>
+                </div>
+                <div v-else class="flex">
+                  <vue-feather type="wifi-off"></vue-feather>
+                  <span class="space-h">به اینترنت دسترسی ندارید</span>
+                </div>
+            </Button>
           </div>
         </div>
-        <div class="space-2-v">
-          <Button @click="submit"
-            :disabled="v$.$invalid || !$store.state.isOnline" class="p-button-sm">
-              <div v-if="$store.state.isOnline" class="flex">
-                <vue-feather type="check"></vue-feather>
-                <span class="space-h">ایجاد آلبوم جدید</span>
-              </div>
-              <div v-else class="flex">
-                <vue-feather type="wifi-off"></vue-feather>
-                <span class="space-h">به اینترنت دسترسی ندارید</span>
-              </div>
-          </Button>
-        </div>
-      </div>
-    </template>
-  </Card>
+      </template>
+    </Card>
+  </BlockUI>
 </template>
 
 <script lang="ts">
@@ -159,10 +161,12 @@ export default defineComponent({
       loadingGenres: false,
       loadingGenresPlaceholder: 'منتظر باشید...',
       genresOfArtist: [],
+      blocked: false,
     };
   },
   methods: {
     submit() {
+      this.blocked = true;
       const dto = new CreateAlbumRequest(
         {
           title: this.title,
@@ -192,6 +196,9 @@ export default defineComponent({
             detail: err.message,
             life: 4000,
           });
+        })
+        .finally(() => {
+          this.blocked = false;
         });
     },
   },

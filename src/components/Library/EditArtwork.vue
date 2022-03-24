@@ -111,9 +111,9 @@
     </div>
     <div class="space-v"><hr/></div>
     <div class="flex justify-content-center space-2-v">
-      <Button :disabled="v$.$invalid" @click="submit" class="p-button-sm">
-        <vue-feather type="save"></vue-feather>
-        <span class="space-h">ذخیره</span>
+      <Button :disabled="v$.$invalid || blocked" @click="submit" class="p-button-sm">
+        <vue-feather :type="blocked ? 'loader' : 'save'"></vue-feather>
+        <span class="space-h">{{blocked ? 'منتظر باشید...' : 'ذخیره'}}</span>
       </Button>
     </div>
   </div>
@@ -167,6 +167,7 @@ export default defineComponent({
       genreOptions: [],
       genreInputPlaceholderText: 'منتظر باشید...',
       genreInputDisabled: true,
+      blocked: false,
     };
   },
   computed: {
@@ -185,6 +186,7 @@ export default defineComponent({
   },
   methods: {
     submit() {
+      this.blocked = true;
       const dto = new EditArtworkRequest(
         this.artwork.id,
         this.title,
@@ -209,6 +211,9 @@ export default defineComponent({
             detail: err.message,
             life: 4000,
           });
+        })
+        .finally(() => {
+          this.blocked = false;
         });
     },
     imageSelected(image: Blob) {

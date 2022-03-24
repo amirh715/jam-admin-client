@@ -1,119 +1,121 @@
 <template>
-  <Card style="width: 60%; margin: auto;">
-    <template #content>
-      <div class="flex flex-column justify-content-center">
-        <div>
-          <h3>آهنگ جدید {{artistTitle || albumTitle}}</h3>
-        </div>
-        <div><hr/></div>
-        <div class="grid">
-          <div class="col">
-            <div>
-              <base-input-text
-                label="عنوان"
-                v-model="title"
-                @change="v$.title.$touch"
-                :errors="v$.title.$errors"
-                note="فارسی برای آهنگ های فارسی و انگلیسی برای آهنگ های خارجی"
-              />
+  <BlockUI :blocked="blocked" style="width: 60%; margin: auto;">
+    <Card style="width: 100%; margin: auto;">
+      <template #content>
+        <div class="flex flex-column justify-content-center">
+          <div>
+            <h3>آهنگ جدید {{artistTitle || albumTitle}}</h3>
+          </div>
+          <div><hr/></div>
+          <div class="grid">
+            <div class="col">
+              <div>
+                <base-input-text
+                  label="عنوان"
+                  v-model="title"
+                  @change="v$.title.$touch"
+                  :errors="v$.title.$errors"
+                  note="فارسی برای آهنگ های فارسی و انگلیسی برای آهنگ های خارجی"
+                />
+              </div>
+              <div>
+                <base-input-text
+                  label="تگ ها"
+                  v-model="tags"
+                  @change="v$.tags.$touch"
+                  :errors="v$.tags.$errors"
+                  note="عنوان آهنگ به فینگلیش"
+                />
+              </div>
+              <div>
+                <base-multi-select-input
+                  label="سبک ها"
+                  v-model="genres"
+                  :options="genreOptions"
+                  optionLabel="title"
+                  :selectionLimit="1"
+                  :disabled="isAlbumTrack"
+                  :note="isAlbumTrack
+                    ? 'سبک های آلبوم برای آهنگ ثبت می شود.'
+                    : 'سبک آهنگ از میان سبک های آلبوم/هنرمند آن است.'"
+                />
+              </div>
+              <div>
+                <base-textarea
+                  label="توضیحات"
+                  v-model="description"
+                  @change="v$.description.$touch"
+                  :errors="v$.description.$errors"
+                  note="چند جمله کوتاه درباره آهنگ..."
+                />
+              </div>
+              <div>
+                <base-input-text
+                  label="لیبل"
+                  v-model="recordLabel"
+                  @change="v$.recordLabel.$touch"
+                  :errors="v$.recordLabel.$errors"
+                  :disabled="isAlbumTrack"
+                  :note="isAlbumTrack && 'رکورد لیبل آلبوم برای آهنگ ثبت می شود.'"
+                />
+              </div>
+              <div>
+                <base-input-text
+                  label="تهیه کننده"
+                  :disabled="isAlbumTrack"
+                  :note="isAlbumTrack
+                    ? 'تهیه کننده آلبوم برای آهنگ ثبت می شود.'
+                    : 'عنوان تهیه کننده'"
+                />
+              </div>
             </div>
-            <div>
-              <base-input-text
-                label="تگ ها"
-                v-model="tags"
-                @change="v$.tags.$touch"
-                :errors="v$.tags.$errors"
-                note="عنوان آهنگ به فینگلیش"
-              />
-            </div>
-            <div>
-              <base-multi-select-input
-                label="سبک ها"
-                v-model="genres"
-                :options="genreOptions"
-                optionLabel="title"
-                :selectionLimit="1"
-                :disabled="isAlbumTrack"
-                :note="isAlbumTrack
-                  ? 'سبک های آلبوم برای آهنگ ثبت می شود.'
-                  : 'سبک آهنگ از میان سبک های آلبوم/هنرمند آن است.'"
-              />
-            </div>
-            <div>
-              <base-textarea
-                label="توضیحات"
-                v-model="description"
-                @change="v$.description.$touch"
-                :errors="v$.description.$errors"
-                note="چند جمله کوتاه درباره آهنگ..."
-              />
-            </div>
-            <div>
-              <base-input-text
-                label="لیبل"
-                v-model="recordLabel"
-                @change="v$.recordLabel.$touch"
-                :errors="v$.recordLabel.$errors"
-                :disabled="isAlbumTrack"
-                :note="isAlbumTrack && 'رکورد لیبل آلبوم برای آهنگ ثبت می شود.'"
-              />
-            </div>
-            <div>
-              <base-input-text
-                label="تهیه کننده"
-                :disabled="isAlbumTrack"
-                :note="isAlbumTrack
-                  ? 'تهیه کننده آلبوم برای آهنگ ثبت می شود.'
-                  : 'عنوان تهیه کننده'"
-              />
+            <div class="col">
+              <div>
+                <base-audio-input
+                  label="فایل آهنگ"
+                  note="فایل صوتی آهنگ را انتخاب کنید."
+                  @change="trackSelected"
+                />
+              </div>
+              <div>
+                <base-image-input
+                  label="عکس آهنگ"
+                  v-model="image"
+                  @cropped="imageSelected"
+                  :disabled="isAlbumTrack"
+                  :note="isAlbumTrack && 'عکس آلبوم برای آهنگ ثبت می شود.'"
+                />
+              </div>
+              <div>
+                <base-textarea
+                  label="علامت گذاری"
+                  note="این یادداشت تنها برای ادمین های سیستم قابل مشاهده است."
+                />
+              </div>
+              <div class="space-v">
+                <span class="space-v">تاریخ انتشار</span>
+                <base-datetime-picker
+                  v-model="releaseDate"
+                  :disabled="isAlbumTrack"
+                  type="date"
+                  format="YYYY-MM-DDTHH:mm:ss"
+                />
+                <label v-if="isAlbumTrack" style="opacity: 0.5; font-size: 0.8rem">
+                  تاریخ انتشار آلبوم برای آهنگ ثبت می شود.</label>
+              </div>
             </div>
           </div>
-          <div class="col">
-            <div>
-              <base-audio-input
-                label="فایل آهنگ"
-                note="فایل صوتی آهنگ را انتخاب کنید."
-                @change="trackSelected"
-              />
-            </div>
-            <div>
-              <base-image-input
-                label="عکس آهنگ"
-                v-model="image"
-                @cropped="imageSelected"
-                :disabled="isAlbumTrack"
-                :note="isAlbumTrack && 'عکس آلبوم برای آهنگ ثبت می شود.'"
-              />
-            </div>
-            <div>
-              <base-textarea
-                label="علامت گذاری"
-                note="این یادداشت تنها برای ادمین های سیستم قابل مشاهده است."
-              />
-            </div>
-            <div class="space-v">
-              <span class="space-v">تاریخ انتشار</span>
-              <base-datetime-picker
-                v-model="releaseDate"
-                :disabled="isAlbumTrack"
-                type="date"
-                format="YYYY-MM-DDTHH:mm:ss"
-              />
-              <label v-if="isAlbumTrack" style="opacity: 0.5; font-size: 0.8rem">
-                تاریخ انتشار آلبوم برای آهنگ ثبت می شود.</label>
-            </div>
+          <div class="space-2-v"><hr/></div>
+          <div class="space-2-v">
+            <Button :disabled="v$.$invalid || blocked" @click="submit" class="p-button-sm">
+              <vue-feather :type="blocked ? 'loader' : 'check'"></vue-feather>
+              <span class="space-h">{{blocked ? 'منتظر باشید...' : 'ایجاد آهنگ جدید'}}</span>
+            </Button>
           </div>
         </div>
-        <div class="space-2-v"><hr/></div>
-        <div class="space-2-v">
-          <Button :disabled="v$.$invalid" @click="submit" class="p-button-sm">
-            <vue-feather type="check"></vue-feather>
-            <span class="space-h">ایجاد آهنگ جدید</span>
-          </Button>
-        </div>
-      </div>
-    </template>
-  </Card>
+      </template>
+    </Card>
+  </BlockUI>
 </template>
 
 <script lang="ts">
@@ -147,6 +149,7 @@ export default defineComponent({
       audio: null,
       releaseDate: null,
       genreOptions: [],
+      blocked: false,
     };
   },
   computed: {
@@ -173,6 +176,7 @@ export default defineComponent({
   },
   methods: {
     submit() {
+      this.blocked = true;
       const dto = new CreateTrackRequest(
         this.title,
         this.description,
@@ -202,6 +206,9 @@ export default defineComponent({
             detail: err.message,
             life: 4000,
           });
+        })
+        .finally(() => {
+          this.blocked = false;
         });
     },
     trackSelected(audio: Blob) {
