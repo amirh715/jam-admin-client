@@ -41,7 +41,7 @@ class ArtworkDetails extends LibraryEntityDetails {
     this.artist = _props.artist;
     this.recordLabel = _props.recordLabel;
     this.producer = _props.producer;
-    this.releaseDate = new Date(_props.releaseDate).toISOString();
+    this.releaseDate = _props.releaseDate && new Date(_props.releaseDate).toISOString();
   }
 }
 

@@ -340,6 +340,7 @@ class LibraryService {
   }
 
   private static create(object: any): LibraryEntityDetails {
+    if (!object) return null;
     if (object.type === 'S') {
       return new SingerDetails(object);
     }

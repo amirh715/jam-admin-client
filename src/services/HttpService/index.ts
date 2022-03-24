@@ -6,8 +6,7 @@ import axios, {
 import * as _ from 'lodash';
 
 const config : AxiosRequestConfig = {
-  baseURL: 'http://localhost:4567/api/v1',
-  timeout: 5000,
+  baseURL: 'https://api.jamusicapp.ir/v1',
   headers: {
     // 'x-client-version': 'ADMIN_1.0.0',
     'content-type': 'multipart/form-data',

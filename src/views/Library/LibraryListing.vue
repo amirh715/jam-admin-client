@@ -81,6 +81,7 @@ export default defineComponent({
         this.waiting = true;
       }
       this.waitingTimer = setTimeout(() => {
+        this.items = [];
         this.waiting = false;
         this.filters = filters;
         this.fetch();

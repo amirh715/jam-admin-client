@@ -31,7 +31,7 @@ export default defineComponent({
       const dto = new GetAllLoginAuditsRequest(this.limit, this.offset);
       UserService.getAllLogins(dto)
         .then((items) => {
-          this.items = items;
+          this.items.push(...items);
           this.offset += this.limit;
         })
         .catch((err) => {
