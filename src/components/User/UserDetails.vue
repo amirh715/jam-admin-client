@@ -54,6 +54,10 @@
               <date-time-displayer :datetime="user.lastModifiedAt" />
             </div>
             <div class="space-v flex">
+              <vue-feather type="send"></vue-feather>
+              <b class="space-h">توکن FCM {{user.hasFCMToken ? 'دارد' : 'ندارد'}}</b>
+            </div>
+            <div class="space-v flex">
               <Button @click="fetchUserLoginAudit" :disabled="loginAuditLoading"
                 class="p-button-sm p-button-link">
                   <div v-if="loginAuditLoading" class="flex">

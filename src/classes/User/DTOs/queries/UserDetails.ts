@@ -20,6 +20,7 @@ class UserDetails {
   public totalLoginCount: string;
   public totalPlayedTracksCount: string;
   public profileImageSrc: string | ArrayBuffer;
+  public hasFCMToken: boolean;
 
   public constructor(
     _props: {
@@ -41,6 +42,7 @@ class UserDetails {
       totalLoginCount: string,
       totalPlayedTracksCount: string,
       profileImageSrc: string,
+      hasFCMToken: boolean,
     },
   ) {
     this.id = _props.id;
@@ -61,6 +63,7 @@ class UserDetails {
     this.totalLoginCount = _props.totalLoginCount;
     this.totalPlayedTracksCount = _props.totalPlayedTracksCount;
     this.profileImageSrc = _props.profileImageSrc;
+    this.hasFCMToken = _props.hasFCMToken;
   }
 }
 
