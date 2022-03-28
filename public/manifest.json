@@ -1,8 +1,8 @@
 {
-  "name": "Jamusic",
-  "short_name": "Jamusic",
+  "name": "Jamusic Admin",
+  "short_name": "Jamusic Admin",
   "lang": "en-US",
-  "start_url": "http://localhost:8080",
+  "start_url": "https://admin.jamusicapp.ir",
   "scope": "./",
   "display": "standalone",
   "theme_color": "#ffd700",

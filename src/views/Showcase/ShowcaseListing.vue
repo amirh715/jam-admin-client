@@ -17,7 +17,7 @@
         style="cursor: pointer"
       />
     </div>
-    <div>
+    <div v-else>
       <h1>ویترین خالی ست :|</h1>
     </div>
   </div>
