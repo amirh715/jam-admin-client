@@ -1,7 +1,7 @@
 <template>
   <Menubar :style="{border: !$store.state.isOnline ? '1px solid tomato' : ''}">
     <template #start>
-      <b @click="goHome" style="cursor: pointer">اپلیکیشن جم</b>
+      <b @click="goHome" style="cursor: pointer">اَپلیکیشن جَم</b>
     </template>
     <template #end>
       <div v-if="$store.state.isOnline">
@@ -24,8 +24,8 @@
 
 <script>
 import { ProfileService } from '@/services/ProfileService';
-import router from '../../router';
-import { AuthService } from '../../services/AuthService';
+import router from '@/router';
+import store from '@/store';
 
 export default {
   data() {
@@ -35,7 +35,7 @@ export default {
       items: [
         {
           label: 'پروفایل',
-          command() { router.push('/profile'); },
+          command() { router.push({ name: 'Profile' }); },
         },
         {
           label: 'راهنما',
@@ -44,8 +44,7 @@ export default {
         {
           label: 'خروج',
           command() {
-            AuthService.logout();
-            router.push({ name: 'Login' });
+            store.dispatch('logout');
           },
         },
       ],

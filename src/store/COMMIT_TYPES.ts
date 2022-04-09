@@ -1,6 +1,8 @@
 enum COMMIT_TYPES {
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
+  UPLOADING = 'UPLOADING',
+  NOT_UPLOADING = 'NOT_UPLOADING',
 }
 
 export {

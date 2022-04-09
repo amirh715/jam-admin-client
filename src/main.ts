@@ -38,6 +38,7 @@ import Panel from 'primevue/panel';
 import Skeleton from 'primevue/skeleton';
 import VirtualScroller from 'primevue/virtualscroller';
 import Slider from 'primevue/slider';
+import ProgressBar from 'primevue/progressbar';
 
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -78,7 +79,8 @@ import { AudioManager } from './services/AudioManager';
 import { PlayedTrack } from './persistence/PlayedTrack';
 import { Database } from './persistence';
 import { LibraryService } from './services/LibraryService';
-import { AuthService } from './services/AuthService';
+import { HttpService } from './services/HttpService';
+import { COMMIT_TYPES } from './store/COMMIT_TYPES';
 
 const app = createApp(App)
   .use(store)
@@ -124,6 +126,7 @@ app.component('Panel', Panel);
 app.component('Skeleton', Skeleton);
 app.component('VirtualScroller', VirtualScroller);
 app.component('Slider', Slider);
+app.component('ProgressBar', ProgressBar);
 
 app.component('datetime-picker', Vue3PersianDatetimePicker);
 app.component('DateTimeDisplayer', DateTimeDisplayer);
@@ -143,7 +146,7 @@ app.component('Player', Player);
 app.component(VueFeather.name || '', VueFeather);
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker-dev.js');
+  navigator.serviceWorker.register('./service-worker.js');
 }
 
 app.mount('#app');
@@ -158,10 +161,19 @@ AudioManager.addEventListener('trackPlayed', () => {
 
 AppManager.syncPlayedTracks();
 
+HttpService.addEventListener('uploadProgress', (ev: CustomEvent) => {
+  const { uploadProgressValue } = ev.detail;
+  if (uploadProgressValue < 100) {
+    store.commit(COMMIT_TYPES.UPLOADING, { uploadProgressValue });
+  } else {
+    store.commit(COMMIT_TYPES.NOT_UPLOADING);
+  }
+});
+
 // service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker-dev.js', { scope: './' });
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' });
   });
   navigator.serviceWorker.register('firebase-messaging-sw.js', { scope: '/*' });
 

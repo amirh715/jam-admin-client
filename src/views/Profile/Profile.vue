@@ -316,7 +316,7 @@ export default defineComponent({
                 detail: 'عکس پروفایل شما حذف شد.',
                 life: 4000,
               });
-              this.$router.go();
+              this.$router.push({ name: 'Home' });
             })
             .catch((error) => {
               this.$toast.add({

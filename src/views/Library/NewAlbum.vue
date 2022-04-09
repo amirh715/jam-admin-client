@@ -71,7 +71,9 @@
                 <base-image-input
                   label="انتخاب عکس آلبوم"
                   :editable="true"
+                  :stencilProps="{aspectRatio: 1/1}"
                   v-model="image"
+                  @change="imageChanged"
                 />
               </div>
               <div>
@@ -200,6 +202,9 @@ export default defineComponent({
         .finally(() => {
           this.blocked = false;
         });
+    },
+    imageChanged(image: Blob) {
+      this.image = image;
     },
   },
   mounted() {

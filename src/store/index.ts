@@ -4,6 +4,7 @@ import { AuthService } from '@/services/AuthService';
 import { COMMIT_TYPES } from './COMMIT_TYPES';
 import { UserRole } from '@/classes/User/Types/UserRole';
 import { player } from '@/store/modules/player';
+import router from '@/router';
 
 export default createStore({
   state: {
@@ -12,6 +13,7 @@ export default createStore({
     role: AuthService.isAuthenticated() ? AuthService.getRole() : null,
     isAuthenticated: AuthService.isAuthenticated(),
     userName: null,
+    uploadProgressValue: 0,
   },
   mutations: {
     online(state) {
@@ -20,16 +22,22 @@ export default createStore({
     offline(state) {
       state.isOnline = false;
     },
-    login(state, payload: {subject: string, role: UserRole}) {
+    [COMMIT_TYPES.LOGIN](state, payload: {subject: string, role: UserRole}) {
       state.isAuthenticated = true;
       state.subject = payload.subject;
       state.role = payload.role;
     },
-    logout(state) {
+    [COMMIT_TYPES.LOGOUT](state) {
       state.isAuthenticated = false;
       state.subject = null;
       state.role = null;
       state.userName = '';
+    },
+    [COMMIT_TYPES.UPLOADING](state, payload: {uploadProgressValue: number}) {
+      state.uploadProgressValue = payload.uploadProgressValue;
+    },
+    [COMMIT_TYPES.NOT_UPLOADING](state) {
+      state.uploadProgressValue = 0;
     },
   },
   actions: {
@@ -41,7 +49,8 @@ export default createStore({
         });
     },
     logout({ commit }) {
-      commit('logout');
+      commit(COMMIT_TYPES.LOGOUT);
+      router.push({ name: 'Login' });
     },
   },
   modules: {

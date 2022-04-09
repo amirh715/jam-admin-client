@@ -1,4 +1,4 @@
-import { Howl } from 'howler';
+import { Howl, Howler } from 'howler';
 import * as _ from 'lodash';
 import { LibraryService } from '../LibraryService';
 import { TrackDetails } from '@/classes/Library/DTOs/queries/TrackDetails';
@@ -26,9 +26,8 @@ class AudioManager extends EventTarget {
         this.stop();
       }
       this.currentTrack = this.queue[this.currentQueueIndex];
-      const blob = await LibraryService.getTrackAudio(this.currentTrack.id);
       this.howler = new Howl({
-        src: URL.createObjectURL(blob),
+        src: `https://api.jamusicapp.ir/v1/library/audio/${this.currentTrack.id}`,
         format: ['mp3'],
         html5: true,
         onload: () => {
@@ -203,9 +202,9 @@ class AudioManager extends EventTarget {
     return this.howler.loop();
   }
 
-  // public isCached() {
-  //   return Promise.resolve();
-  // }
+  private getAudioContext(): AudioContext {
+    return Howler.ctx;
+  }
 }
 
 const INSTANCE = new AudioManager();

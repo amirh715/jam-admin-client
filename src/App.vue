@@ -30,6 +30,9 @@
             @repeat="$store.dispatch('REPEAT')"
           />
         </transition>
+        <div v-show="$store.state.uploadProgressValue" class="space-v">
+          <ProgressBar :value="$store.state.uploadProgressValue" :showValue="false" />
+        </div>
       </div>
       <div id="router-view">
         <router-view />

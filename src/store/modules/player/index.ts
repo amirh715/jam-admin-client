@@ -2,7 +2,6 @@ import { Module } from 'vuex';
 import { PLAYER_COMMIT_TYPES } from './PLAYER_COMMIT_TYPES';
 import { PLAYER_ACTION_TYPES } from './PLAYER_ACTION_TYPES';
 import { AudioManager } from '@/services/AudioManager';
-// import { LibraryService } from '@/services/LibraryService';
 import { TrackDetails } from '@/classes/Library/DTOs/queries/TrackDetails';
 
 const player: Module<{
@@ -23,6 +22,7 @@ const player: Module<{
   role: string,
   isAuthenticated: boolean,
   userName: string,
+  uploadProgressValue: number,
 }> = {
   state: {
     currentTrack: null,

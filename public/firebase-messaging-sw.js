@@ -8,6 +8,7 @@ importScripts(
 );
 
 import { getToken, onMessage } from 'firebase/messaging';
+import { AuthService } from '../src/services/AuthService';
 
 const fcmConfig = {
   apiKey: 'AIzaSyC39bXdJAlAjLapfKqL3nrKPNzUXkg95xs',
@@ -29,12 +30,8 @@ const messaging = firebase.messaging();
 
 getToken(messaging, { vapidKey: 'BORT7Rl_GFJE-IaNyl8nih6FRmRMQUHijKUpbNy1kIkAm1E4khGtobXs4gPhCZarcpThVsaJ9rtOkQfZymc67g0' })
 .then((token) => {
-  console.log(token);
-})
-.catch((err) => {
-  console.log(err);
+  AuthService.updateFCMToken(token);
 });
-
 onMessage(messaging, (payload) => {
   console.log(payload);
   alert('HEELLLELELELE');

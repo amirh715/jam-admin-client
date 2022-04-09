@@ -147,11 +147,11 @@ class LibraryService {
 
   public static async getTrackAudio(trackId: string): Promise<Blob> {
     try {
-      const { data } = await HttpService.get(`${LIBRARY_PATHS.GET_TRACK_AUDIO}/${trackId}`, '',
+      const { data, headers } = await HttpService.get(`${LIBRARY_PATHS.GET_TRACK_AUDIO}/${trackId}`, '',
         { responseType: 'arraybuffer', headers: { 'Content-Type': 'audio/mpeg' } });
-      return Promise.resolve(new Blob([data], { type: 'audio/mpeg' }));
+      return new Blob([data], { type: headers['content-type'] });
     } catch (err) {
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 

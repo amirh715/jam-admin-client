@@ -164,23 +164,6 @@ export default defineComponent({
         this.$store.dispatch('RESUME');
       }
     },
-    fetchTrackAudio() {
-      LibraryService.getTrackAudio(this.track.id)
-        .then((audio) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(audio);
-          reader.onload = () => {
-            this.audioSrc = reader.result;
-          };
-        })
-        .catch((err) => {
-          this.$toast.add({
-            severity: 'error',
-            detail: err.message,
-            life: 4000,
-          });
-        });
-    },
     deleteTrack() {
       LibraryService.remove(this.track.id)
         .then(() => {
@@ -249,7 +232,6 @@ export default defineComponent({
       .finally(() => {
         this.imageLoading = false;
       });
-    this.fetchTrackAudio();
   },
 });
 </script>

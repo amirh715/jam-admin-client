@@ -46,6 +46,10 @@ class AuthService {
     return this.role;
   }
 
+  public getAuthToken(): string {
+    return localStorage.getItem('token');
+  }
+
   public isAdmin(): boolean {
     return this.getRole() === UserRole.ADMIN;
   }
@@ -179,7 +183,7 @@ class AuthService {
       this.fcmToken = token;
       const data = new FormData();
       data.append('FCMToken', this.fcmToken);
-      HttpService.post(this.PATHS.updateFCMToken, data);
+      await HttpService.post(this.PATHS.updateFCMToken, data);
       return Promise.resolve();
     } catch (err) {
       return Promise.reject(err);
