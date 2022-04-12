@@ -68,7 +68,7 @@ class LibraryService {
       await HttpService.post(LIBRARY_PATHS.CREATE_ALBUM, payload);
       return Promise.resolve();
     } catch (err) {
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -132,7 +132,7 @@ class LibraryService {
       const { data } = await HttpService.get(`${LIBRARY_PATHS.GET_ENTITY_BY_ID}/${id}`);
       return Promise.resolve(this.create(data));
     } catch (err) {
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -184,7 +184,7 @@ class LibraryService {
       await HttpService.put(LIBRARY_PATHS.EDIT_ARTIST, payload);
       return Promise.resolve();
     } catch (err) {
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 

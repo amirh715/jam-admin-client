@@ -42,8 +42,8 @@ import { Errors } from '../../classes/common/Errors';
 import {
   user,
 } from '../../validators';
-import { AuthService } from '../../services/AuthService';
 import { IBusinessError } from '../../classes/common/IBusinessError';
+import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 
 export default defineComponent({
   setup() {
@@ -65,16 +65,14 @@ export default defineComponent({
     };
   },
   methods: {
-    submit() {
+    async submit() {
       if (this.v$.$error) return;
       this.waiting = true;
       this.v$.$touch();
-      AuthService.login(this.mobile, this.password)
-        .then(() => {
-          this.$router.push({ name: 'Home' });
-          this.$store.commit('login',
-            { subject: AuthService.getSubjectId(), role: AuthService.getRole() });
-        })
+      await this.$store.dispatch(ACTION_TYPES.LOGIN, {
+        mobile: this.mobile,
+        password: this.password,
+      })
         .catch((err: IBusinessError) => {
           if (err.type === Errors.UserIsNotVerifiedError) {
             this.$router.push({ name: 'Verification', query: { mobile: this.mobile } });

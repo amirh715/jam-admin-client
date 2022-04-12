@@ -1,5 +1,5 @@
 <template>
-  <BlockUI :blocked="blocked" style="width: 100%; margin: auto">
+  <BlockUI :blocked="blocked" style="width: 80%; margin: auto">
     <Card style="width: 100%; margin: auto">
       <template #content>
         <div class="flex flex-column justify-content-center">
@@ -73,7 +73,7 @@
                   :editable="true"
                   :stencilProps="{aspectRatio: 1/1}"
                   v-model="image"
-                  @change="imageChanged"
+                  @cropped="imageChanged"
                 />
               </div>
               <div>
@@ -152,7 +152,7 @@ export default defineComponent({
       artistId: this.$route.query.artistId,
       artistTitle: this.$route.query.artistTitle,
       title: null,
-      tags: null,
+      tags: [],
       genres: [],
       description: null,
       recordLabel: null,

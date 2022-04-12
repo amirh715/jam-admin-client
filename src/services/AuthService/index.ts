@@ -78,7 +78,7 @@ class AuthService {
       this.authenticated = true;
       this.subjectId = payload.sub;
       this.role = payload.role;
-      return response.data;
+      return response.data.token;
     } catch (error) {
       if (error.response) {
         return Promise.reject(error.response.data);

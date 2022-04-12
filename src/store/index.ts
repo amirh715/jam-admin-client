@@ -5,6 +5,7 @@ import { COMMIT_TYPES } from './COMMIT_TYPES';
 import { UserRole } from '@/classes/User/Types/UserRole';
 import { player } from '@/store/modules/player';
 import router from '@/router';
+import { ACTION_TYPES } from './ACTION_TYPES';
 
 export default createStore({
   state: {
@@ -41,14 +42,19 @@ export default createStore({
     },
   },
   actions: {
-    login({ commit }, args: { mobile: string, password: string }) {
-      AuthService.login(args.mobile, args.password)
-        .then((token) => {
-          const payload: any = decode(token);
-          commit(COMMIT_TYPES.LOGIN, { subject: payload.sub, role: payload.role });
-        });
+    async [ACTION_TYPES.LOGIN]({ commit }, args: { mobile: string, password: string }) {
+      try {
+        const token = await AuthService.login(args.mobile, args.password);
+        const payload: any = decode(token);
+        commit(COMMIT_TYPES.LOGIN, { subject: payload.sub, role: payload.role });
+        router.push({ name: 'Home' });
+        return Promise.resolve();
+      } catch (err) {
+        return Promise.reject(err);
+      }
     },
-    logout({ commit }) {
+    [ACTION_TYPES.LOGOUT]({ commit }) {
+      AuthService.logout();
       commit(COMMIT_TYPES.LOGOUT);
       router.push({ name: 'Login' });
     },

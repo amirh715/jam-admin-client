@@ -2,7 +2,7 @@ import { helpers } from '@vuelidate/validators';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 
 // library
-const title = (value: string): boolean => value.length > 0 && value.length < 21;
+const title = (value: string): boolean => value.length > 0 && value.length < 121;
 const description = (value: string): boolean =>
   !helpers.req(value) || (value.length > 20 && value.length < 201);
 const tag = (value: string): boolean =>

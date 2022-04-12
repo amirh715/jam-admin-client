@@ -26,6 +26,7 @@
 import { ProfileService } from '@/services/ProfileService';
 import router from '@/router';
 import store from '@/store';
+import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 
 export default {
   data() {
@@ -44,7 +45,7 @@ export default {
         {
           label: 'خروج',
           command() {
-            store.dispatch('logout');
+            store.dispatch(ACTION_TYPES.LOGOUT);
           },
         },
       ],
