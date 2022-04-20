@@ -12,7 +12,7 @@ const tagList = (value: Array<typeof tag>): boolean =>
 const flag = (value: string): boolean =>
   !helpers.req(value) || (value.length > 0 && value.length < 41);
 const instagramId = (value: string) : boolean =>
-  !helpers.req(value) || (value.length > 5 && value.length < 12);
+  !helpers.req(value) || (value.length > 4 && value.length < 40);
 const releaseDate = (value: Date): boolean =>
   !helpers.req(value);
 const recordLabel = (value: string): boolean =>
