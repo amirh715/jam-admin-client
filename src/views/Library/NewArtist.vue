@@ -61,11 +61,11 @@
               <div class="flex justify-content-center space-2-v">
                 <span class="space-2-h">نوع هنرمند:</span>
                 <div>
-                  <RadioButton v-model="artistType" value="S"></RadioButton>
+                  <RadioButton v-model="artistType" checked value="S"></RadioButton>
                   <label class="space-h">خواننده</label>
                 </div>
                 <div>
-                  <RadioButton v-model="artistType" value="B"></RadioButton>
+                  <RadioButton v-model="artistType" disabled value="B"></RadioButton>
                   <label class="space-h">گروه</label>
                 </div>
               </div>
